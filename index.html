@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Camelus by Linc-tw</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Camelus</h1>
+      <h2 class="project-tagline">Fast weak lensing peak counts modeling in C</h2>
+      <a href="https://github.com/Linc-tw/camelus" class="btn">View on GitHub</a>
+      <a href="https://github.com/Linc-tw/camelus/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Linc-tw/camelus/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="camelus" class="anchor" href="#camelus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Camelus</h1>
+
+<p>Counts of Amplified Mass Elevations from Lensing with Ultrafast Simulation<br>
+Chieh-An Lin (CEA Saclay)<br>
+Release v1.2 - 2015-04-06 </p>
+
+<p align="center"><a href="http://species.wikimedia.org/wiki/Camelus"><img src="http://www.cosmostat.org/wp-content/uploads/2014/11/Logo_Camelus_fig_name_vertical.png" width="240px"></a></p>
+
+<h2>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
+
+<p>Camelus is a fast weak lensing peak count modeling in C. It provides a prediction on peak counts from input cosmological parameters.</p>
+
+<p>Here is the summary of the algorithm:</p>
+
+<ul>
+<li>sample halos from a mass function and assign profiles,</li>
+<li>carry out ray-tracing simulations,</li>
+<li>count peaks from smoothed maps.</li>
+</ul>
+
+<p>For a more detailed description, please take a look at Lin &amp; Kilbinger (2015).</p>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>The following softwares are required:</p>
+
+<ul>
+<li><a href="http://cmake.org/cmake/resources/software.html">cmake</a></li>
+<li>gcc</li>
+<li><a href="http://www.gnu.org/software/gsl/">gsl</a></li>
+<li><a href="http://www.fftw.org/">fftw</a></li>
+<li><a href="http://www.cosmostat.org/nicaea.html">nicaea v2.5</a></li>
+</ul>
+
+<h2>
+<a id="compilation" class="anchor" href="#compilation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation</h2>
+
+<p>For Mac users, do the follows before compilation:</p>
+
+<pre><code>$ export CC=gcc
+$ export CXX=g++
+</code></pre>
+
+<p>or use <code>setenv</code> command in tcsh.</p>
+
+<p>To compile the package:</p>
+
+<pre><code>$ export NICAEA={PATH_OF_NICAEA}/nicaea_2.5
+$ cd build
+$ cmake ..
+$ make
+</code></pre>
+
+<p>To get program instructions:</p>
+
+<pre><code>$ ./camelus
+</code></pre>
+
+<h2>
+<a id="updates" class="anchor" href="#updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates</h2>
+
+<p>Current release: Camelus v1.2</p>
+
+<h5>
+<a id="new-features-in-v12---apr-06-2015" class="anchor" href="#new-features-in-v12---apr-06-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>New features in v1.2 - Apr 06, 2015:</h5>
+
+<ul>
+<li>Improved the computation speed by a factor of 6~7</li>
+<li>Converted the halo array structure into a binned structure, called "halo_map"</li>
+<li>Converted the galaxy tree structure into a binned structure, called "gal_map"</li>
+<li>Added the sequential Monte Carlo approximate Monte Carlo (SMC ABC) algorithm</li>
+</ul>
+
+<h5>
+<a id="new-features-in-v11---jan-19-2015" class="anchor" href="#new-features-in-v11---jan-19-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>New features in v1.1 - Jan 19, 2015:</h5>
+
+<ul>
+<li>Fixed the bug from calculating halo radii</li>
+</ul>
+
+<h5>
+<a id="new-features-in-v10---oct-24-2014" class="anchor" href="#new-features-in-v10---oct-24-2014" aria-hidden="true"><span class="octicon octicon-link"></span></a>New features in v1.0 - Oct 24, 2014:</h5>
+
+<ul>
+<li>Fast weak lensing peak count modeling</li>
+</ul>
+
+<h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<ul>
+<li>
+<a href="http://adsabs.harvard.edu/abs/2001PhR...340..291B">Bartelmann &amp; Schneider (2001)</a> - Phys. Rep., 340, 291</li>
+<li>
+<a href="http://adsabs.harvard.edu/abs/2010ApJ...719.1408F">Fan et al. (2010)</a> - ApJ, 719, 1408</li>
+<li>
+<a href="http://adsabs.harvard.edu/abs/2015A%26A...576A..24L">Lin &amp; Kilbinger (2015)</a> - A&amp;A, 576, A24</li>
+<li><a href="http://arxiv.org/abs/1101.0955">Marin et al. (2011)</a></li>
+<li>
+<a href="http://adsabs.harvard.edu/abs/2003MNRAS.340..580T">Takada &amp; Jain (2003a)</a> - MNRAS, 340, 580</li>
+<li>
+<a href="http://adsabs.harvard.edu/abs/2013ApJ...764..116W">Weyant et al. (2013)</a> - ApJ, 764, 116</li>
+</ul>
+
+<h2>
+<a id="contact-information" class="anchor" href="#contact-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact information</h2>
+
+<p>Authors:</p>
+
+<ul>
+<li><a href="http://www.cosmostat.org/people/linc/">Chieh-An Lin</a></li>
+<li><a href="http://www.cosmostat.org/people/kilbinger/">Martin Kilbinger</a></li>
+<li><a href="http://www.cosmostat.org/people/flanusse/">François Lanusse</a></li>
+</ul>
+
+<p>Please feel free to send questions, feedback and bug reports to chieh-an.lin (at) cea.fr.<br>
+Check also the package <a href="http://www.cosmostat.org/software/camelus/">web page</a>.</p>
+
+<h2>
+<a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
+
+<p>Go to param and modify <code>.par</code> files to customize parameters.</p>
+
+<p><code>$ ./camelus 1 z</code><br>
+This gives the values of the mass function from Jenkins et al. (2001) for M from 10^9 to 10^17 [M_sol h^2/Mpc^3].</p>
+
+<p><code>$ ./camelus 2</code><br>
+This yields a halo list from sampling using customized parameters.</p>
+
+<p><code>$ ./camelus 3</code><br>
+This creates a peak catalogue and its histogram of S/N values.<br>
+A halo list, a galaxy list, a smoothed noise map, a smoothed noisy map will be made as well.</p>
+
+<p><code>$ ./camelus 4 N</code><br>
+This creates N independent peak lists with the same cosmology and settings from <code>.par</code> files.<br>
+Using this command can reduce the computation time, since the cosmological computations are factorized.</p>
+
+<p><code>$ ./camelus 4 N Omega_m sigma_8</code><br>
+Same as above, but the inputs Omega_m and sigma_8 will overwrite the values from <code>.par</code> files, and creates N independent peak lists.</p>
+
+<p><code>$ ./camelus 5</code><br>
+ABC computation which requires an observation data that we have provided an example in demo.<br>
+Parameters are defined in <code>peakParam.par</code>. Only several summary statistics are available.<br>
+This gives posterior samples of Omega_m-sigma_8 constraints. Only this combination is available. </p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Linc-tw/camelus">Camelus</a> is maintained by <a href="https://github.com/Linc-tw">Linc-tw</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
