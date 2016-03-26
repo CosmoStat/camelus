@@ -3,7 +3,7 @@
   /*******************************
    **  main.h			**
    **  Chieh-An Lin		**
-   **  Version 2015.04.05	**
+   **  Version 2016.03.20	**
    *******************************/
 
 
@@ -16,18 +16,21 @@
 #include "rayTracing.h"
 #include "smoothing.h"
 #include "peakSelection.h"
+#include "constraint.h"
 #include "ABC.h"
 
-#define __releaseMenu__
-//#define __completeMenu__
-
-//#include "FSL10.h"
-//#include "paperI.h"
-//#include "paperII.h"
+#ifndef __releaseMenu__
+  #include <mpi.h>
+  #include "FITSFunctions.h"
+  #include "paperIII.h"
+#endif
 
 
 int main(int argc, char *argv[]);
+void printInstructions(int task, int printHeader);
+void MPI_terminate(int MPISize, int MPIInd);
 void sandbox(cosmo_hm *cmhm, peak_param *peak, error **err);
 
 
 #endif
+

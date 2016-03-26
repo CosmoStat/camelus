@@ -1,0 +1,13 @@
+# Multiscale data matrix
+# N_nu            = 9
+# nbLinFilters    = 2
+# N_kappa         = 6
+# nbNonlinFilters = 0
+# d_tot           = 18
+#
+# F0X0  F0X1  F0X2 ...
+# F1X0  F1X1  F1X2 ...
+# F2X0  F2X1  F2X2 ...
+# ...   ...   ...  ...
+  320.0   286.0   170.0    77.0    35.0    21.0     4.0     1.0     3.0 
+   86.0    65.0    48.0    31.0    12.0     7.0     3.0     1.0     3.0 

@@ -1,35 +1,56 @@
 ### Peak parameter file ###
 
-
-### Field
-strField 	rectangle	# Geometry (only 'rectangle' is available)
-Omega		304.8  304.8	# [arcmin] Field size (theta_x, theta_y)
   
 ### Halos
-z_halo_max	1.0		# Maxmimum redshift for halos
-N_z_halo	10		# Number of sampling redshift bins
-M_min		1e+12		# [M_sol/h] Minimum sampling mass
+z_halo_max	1.5		# Maxmimum redshift for halos
+N_z_halo	30		# Number of sampling redshift bins
+M_min		5e+12		# [M_sol/h] Minimum sampling mass
 M_max		1e+17		# [M_sol/h] Maximum sampling mass
 
 ### Galaxies
-doKappa		1		# 0 = gamma, 1 = kappa
-# If z_s > 0, all source galaxies fixed at z_s
-# If z_s < 0, use nofz_hm.dat as redshift distribution law parameters
-z_s		1.0
-# If z_s < 0, doRandGalPos is automatically set to 1 
-doRandGalPos	0		# 0 = regular, 1 = random
-n_gal		25.0		# [arcmin^-2] Galaxy number density
+z_s		-1.0		# If z_s > 0, all source galaxies fixed at z_s
+#				# If z_s < 0, use nofz_hm.dat as redshift distribution law parameters
+doRandGalPos	1		# 0 = regular, 1 = random
+#				# If z_s < 0, doRandGalPos is automatically set to 1
+n_gal		12.0		# [arcmin^-2] Galaxy number density
 sigma_eps	0.4		# Ellipticity dispersion
+doKappa		3		# 0 = gamma, 1 = kappa, 2 = g, 3 = g with linear KS
+doMask		0		# 0 = without (only 0 is available)
+maskPath	-		# Path of the mask
   
-### Map, filter & peaks selection
-theta_pix	0.2		# [arcmin] Pixel size
-strFilter	gauss		# Filter type (only 'gauss' is available)
-theta_G		1.0		# [arcmin] Filter size, only used if filter = gauss
-  
+### Field & map
+strField 	rectangle	# Geometry: 'rectangle'
+Omega		180.0  180.0	# [arcmin] Field size (theta_x, theta_y)
+theta_pix	1.0		# [arcmin] Pixel size
+
+### Filter
+doSmoothing	1		# 0 = without, 1 = binning and FFT, 2 = direct convolution, 4 = nonlinear filtering (not available), 
+#				# Sum for performing simultaneously multiple techniques, e.g. 5 = FFT + nonlinear
+FFT_nbFilters	2		# Number of linear filters for FFT
+FFT_strFilter	gauss gauss
+FFT_scale	 1.2   2.4
+#				# Filter type: 'gauss', 'star'
+#				# [arcmin] Filter size in arcmin
+DC_nbFilters	2		# Number of linear filters for direct convolution
+DC_strFilter	gauss gauss
+DC_scale	 1.2   2.4
+#				# Filter type: 'gauss', 'star'
+#				# [arcmin] Filter size in arcmin
+MRLens_nbScales	5		# Number of scales for MRLens (not available)
+MRLens_FDR	0.05		# False detection rate for MRLens (not available)
+
+### Peak historgram
+N_nu		9		# Number of S/N bins
+nu_bin		1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  1e+15
+N_kappa		6		# Number of kappa bins (for nonlinear filtering)
+kappa_bin	0.02  0.03  0.04  0.06  0.10  0.16  1e+15
+
 ### ABC
-ABC_d		2		# Parameter dimension 
-# param = (Omega_m, sigma_8), only this combination is available
-ABC_p		20		# Number of particles
-ABC_r_stop	0.33		# Shutoff success rate
-ABC_summ	abd5		# Summary type 
-# 'abd6', 'abd5', 'pct5', 'cut5', 'pct4', 'pct998', 'pct996', 'cut900' are available
+ABC_obsPath	../demo/x_obs	# Path of the observation data
+ABC_f		3		# Dimension of parameter set
+ABC_doParam	0  5  6		# 0 = Omega_m, 1 = Omega_de, 2 = Omega_b, 3 = n_s, 4 = h_100,
+#				# 5 = sigma_8, 6 = w0_de,    7 = w1_de,   8 = c_0, 9 = beta_NFW
+ABC_Q		1200		# Number of particles
+ABC_r_stop	0.03		# Shutoff success rate
+ABC_summ	summ_gauss	# Summary type: 'summ_gauss'
+

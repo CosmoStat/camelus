@@ -3,7 +3,7 @@
   /*******************************
    **  commonHeader.c		**
    **  Chieh-An Lin		**
-   **  Version 2015.02.25	**
+   **  Version 2015.12.17	**
    *******************************/
 
   
@@ -11,31 +11,89 @@
 
 
 //----------------------------------------------------------------------
-//-- Functions related to int_arr
+//-- Functions related to array
 
-int_arr *initialize_int_arr(int length)
+void reset_double(double *array, int length)
 {
-  int_arr *iArr = (int_arr*)malloc(sizeof(int_arr));
-  iArr->length  = length;
-  iArr->array   = (int*)calloc(length, sizeof(int));
-  return iArr;
-}
-
-void free_int_arr(int_arr *iArr)
-{
-  if (iArr->array) {free(iArr->array); iArr->array = NULL;}
-  free(iArr); iArr = NULL;
+  int i;
+  for (i=0; i<length; i++) array[i] = 0.0;
   return;
 }
 
-void print_int_arr(int_arr *iArr)
+void rescale_double(double *array, int length, double factor)
 {
-  printf("# int_arr\n");
-  
-  int L = (int)fmin(iArr->length, 20);
   int i;
-  for (i=0; i<L; i++) printf(" %d ", iArr->array[i]);
-  printf("\n");
+  for (i=0; i<length; i++) array[i] *= factor;
+  return;
+}
+
+void reset_fftw_complex(fftw_complex *array, int length)
+{
+  double *c;
+  int i;
+  for (i=0; i<length; i++) {
+    c = array[i];
+    c[0] = 0.0;
+    c[1] = 0.0;
+  }
+  return;
+}
+
+void rescaleReal_fftw_complex(fftw_complex *array, int length, double factor)
+{
+  int i;
+  for (i=0; i<length; i++) array[i][0] *= factor;
+  return;
+}
+
+void rescale_fftw_complex(fftw_complex *array, int length, double factor)
+{
+  double *c;
+  int i;
+  for (i=0; i<length; i++) {
+    c = array[i];
+    c[0] *= factor;
+    c[1] *= factor;
+  }
+  return;
+}
+
+void multiplication_fftw_complex(fftw_complex *array1, fftw_complex *array2, fftw_complex *product, int length)
+{
+  double value, *c1, *c2;
+  int i;
+  for (i=0; i<length; i++) {
+    c1 = array1[i];
+    c2 = array2[i];
+    value         = c1[0] * c2[0] - c1[1] * c2[1];
+    product[i][1] = c1[0] * c2[1] + c1[1] * c2[0];
+    product[i][0] = value;
+  }
+  return;
+}
+
+void copy_fftw_complex(fftw_complex *from, fftw_complex *to, int length)
+{
+  double *c1, *c2;
+  int i;
+  for (i=0; i<length; i++) {
+    c1 = from[i];
+    c2 = to[i];
+    c2[0] = c1[0];
+    c2[1] = c1[1];
+  }
+  return;
+}
+
+void print_fftw_complex(fftw_complex *array, int N1)
+{
+  int i, j;
+  for (j=0; j<10; j++) {
+    for (i=0; i<10; i++) {
+      printf("% .3f ", array[i+j*N1][0]);
+    }
+    printf("\n");
+  }
   return;
 }
 
@@ -94,10 +152,11 @@ void print_double_mat(double_mat *fMat)
   
   int L1 = (int)fmin(fMat->N1, 8);
   int L2 = (int)fmin(fMat->N2, 8);
+  
   int i, j;
   for (j=0; j<L2; j++) {
     for (i=0; i<L1; i++) {
-      printf(" %9g ", fMat->matrix[i+j*fMat->N1]);
+      printf(" % 8.5f ", fMat->matrix[i+j*fMat->N1]);
     }
     printf("\n");
   }
@@ -126,6 +185,72 @@ void free_double_ten3(double_ten3 *fTen)
 }
 
 //----------------------------------------------------------------------
+//-- Functions related to int_arr
+
+int_arr *initialize_int_arr(int length)
+{
+  int_arr *iArr = (int_arr*)malloc(sizeof(int_arr));
+  iArr->length  = length;
+  iArr->array   = (int*)calloc(length, sizeof(int));
+  return iArr;
+}
+
+void free_int_arr(int_arr *iArr)
+{
+  if (iArr->array) {free(iArr->array); iArr->array = NULL;}
+  free(iArr); iArr = NULL;
+  return;
+}
+
+void print_int_arr(int_arr *iArr)
+{
+  printf("# int_arr\n");
+  
+  int L = (int)fmin(iArr->length, 20);
+  int i;
+  for (i=0; i<L; i++) printf(" %d ", iArr->array[i]);
+  printf("\n");
+  return;
+}
+
+//----------------------------------------------------------------------
+//-- Functions related to short_mat
+
+short_mat *initialize_short_mat(int N1, int N2)
+{
+  short_mat *iMat = (short_mat*)malloc(sizeof(short_mat));
+  iMat->N1        = N1;
+  iMat->N2        = N2;
+  iMat->length    = N1 * N2;
+  iMat->matrix    = (short*)calloc(N1 * N2, sizeof(short));
+  return iMat;
+}
+
+void free_short_mat(short_mat *iMat)
+{
+  if (iMat->matrix) {free(iMat->matrix); iMat->matrix = NULL;}
+  free(iMat); iMat = NULL;
+  return;
+}
+
+void print_short_mat(short_mat *iMat)
+{
+  printf("# short_mat\n");
+  
+  int L1 = (int)fmin(iMat->N1, 8);
+  int L2 = (int)fmin(iMat->N2, 8);
+  
+  int i, j;
+  for (j=0; j<L2; j++) {
+    for (i=0; i<L1; i++) {
+      printf(" %4d ", (int)iMat->matrix[i+j*iMat->N1]);
+    }
+    printf("\n");
+  }
+  return;
+}
+
+//----------------------------------------------------------------------
 //-- Functions related to interpolator_t
 
 interpolator_t *initialize_interpolator_t(int length)
@@ -144,7 +269,7 @@ interpolator_t *initialize_interpolator_t(int length)
 
 void free_interpolator_t(interpolator_t *inter)
 {
-  if (inter->x)     {free(inter->x);     inter->x = NULL;}
+  if (inter->x)     {free(inter->x);     inter->x     = NULL;}
   if (inter->value) {free(inter->value); inter->value = NULL;}
   free(inter); inter = NULL;
   return;
@@ -300,13 +425,13 @@ double execute_sampler_t(sampler_t *samp, double x)
 //----------------------------------------------------------------------
 //-- Functions related to sampler_arr
 
-sampler_arr *initialize_sampler_arr(int length, int nbPoints)
+sampler_arr *initialize_sampler_arr(int N_array, int N_type)
 {
   sampler_arr *sampArr  = (sampler_arr*)malloc(sizeof(sampler_arr));
-  sampArr->length       = length;
-  sampArr->array        = (sampler_t**)malloc(length * sizeof(sampler_t*));
+  sampArr->length       = N_array;
+  sampArr->array        = (sampler_t**)malloc(N_array * sizeof(sampler_t*));
   int i;
-  for (i=0; i<length; i++) sampArr->array[i] = initialize_sampler_t(nbPoints);   
+  for (i=0; i<N_array; i++) sampArr->array[i] = initialize_sampler_t(N_type);   
   return sampArr;
 }
 
@@ -315,6 +440,7 @@ void free_sampler_arr(sampler_arr *sampArr)
   int i;
   if (sampArr->array) {
     for (i=0; i<sampArr->length; i++) {free_sampler_t(sampArr->array[i]); sampArr->array[i] = NULL;}
+    free(sampArr->array); sampArr->array = NULL;
   }
   free(sampArr); sampArr = NULL;
   return;
@@ -323,72 +449,103 @@ void free_sampler_arr(sampler_arr *sampArr)
 //----------------------------------------------------------------------
 //-- Functions related to FFT_t
 
-FFT_t *initialize_FFT_t(int N1, int N2)
+FFT_t *initialize_FFT_t(int N)
 {
+  //-- 'before' and 'kernel' should be set to 0 at the beginning.
+  
   FFT_t *transformer    = (FFT_t*)malloc(sizeof(FFT_t));
-  transformer->N1       = N1;
-  transformer->N2       = N2;
-  transformer->length   = N1 * N2;
-  transformer->length_f = N1 * (N2/2 + 1);
+  transformer->N        = N;
+  transformer->length   = N * N;
   
-  //-- Allocate direct space elements
-  transformer->before   = (double*)calloc(transformer->length, sizeof(double));
-  transformer->kernel   = (double*)calloc(transformer->length, sizeof(double));
-  transformer->after    = (double*)calloc(2 * transformer->length_f, sizeof(double));
-  
-  //-- Allocate Fourier space elements
-  transformer->before_f = (fftw_complex*)fftw_malloc(transformer->length_f * sizeof(fftw_complex));
-  transformer->kernel_f = (fftw_complex*)fftw_malloc(transformer->length_f * sizeof(fftw_complex));
-  transformer->after_f  = (fftw_complex*)fftw_malloc(transformer->length_f * sizeof(fftw_complex));
+  //-- Allocate fftw_complex elements
+  transformer->before   = (fftw_complex*)fftw_malloc(transformer->length * sizeof(fftw_complex));
+  transformer->kernel   = (fftw_complex*)fftw_malloc(transformer->length * sizeof(fftw_complex));
+  transformer->after    = (fftw_complex*)fftw_malloc(transformer->length * sizeof(fftw_complex));
   
   //-- Allocate fftw_plan elements
-  transformer->before_p = fftw_plan_dft_r2c_2d(N1, N2, transformer->before,  transformer->before_f, FFTW_ESTIMATE);
-  transformer->kernel_p = fftw_plan_dft_r2c_2d(N1, N2, transformer->kernel,  transformer->kernel_f, FFTW_ESTIMATE);
-  transformer->after_p  = fftw_plan_dft_c2r_2d(N1, N2, transformer->after_f, transformer->after,    FFTW_ESTIMATE);
+  transformer->before_f = fftw_plan_dft_2d(N, N, transformer->before, transformer->before, FFTW_FORWARD,  FFTW_ESTIMATE);
+  transformer->kernel_f = fftw_plan_dft_2d(N, N, transformer->kernel, transformer->kernel, FFTW_FORWARD,  FFTW_ESTIMATE);
+  transformer->after_b  = fftw_plan_dft_2d(N, N, transformer->after,  transformer->after,  FFTW_BACKWARD, FFTW_ESTIMATE);
+  transformer->before_b = fftw_plan_dft_2d(N, N, transformer->before, transformer->before, FFTW_BACKWARD, FFTW_ESTIMATE);
   
   return transformer;
 }
 
 void free_FFT_t(FFT_t *transformer)
 {
-  if (transformer->before)   {free(transformer->before);                transformer->before = NULL;}
-  if (transformer->kernel)   {free(transformer->kernel);                transformer->kernel = NULL;}
-  if (transformer->after)    {free(transformer->after);                 transformer->after = NULL;}
+  if (transformer->before)   {fftw_free(transformer->before);           transformer->before   = NULL;}
+  if (transformer->kernel)   {fftw_free(transformer->kernel);           transformer->kernel   = NULL;}
+  if (transformer->after)    {fftw_free(transformer->after);            transformer->after    = NULL;}
   
-  if (transformer->before_f) {fftw_free(transformer->before_f);         transformer->before_f = NULL;}
-  if (transformer->kernel_f) {fftw_free(transformer->kernel_f);         transformer->kernel_f = NULL;}
-  if (transformer->after_f)  {fftw_free(transformer->after_f);          transformer->after_f = NULL;}
-  
-  if (transformer->before_p) {fftw_destroy_plan(transformer->before_p); transformer->before_p = NULL;}
-  if (transformer->kernel_p) {fftw_destroy_plan(transformer->kernel_p); transformer->kernel_p = NULL;}
-  if (transformer->after_p)  {fftw_destroy_plan(transformer->after_p);  transformer->after_p = NULL;}
+  if (transformer->before_f) {fftw_destroy_plan(transformer->before_f); transformer->before_f = NULL;}
+  if (transformer->kernel_f) {fftw_destroy_plan(transformer->kernel_f); transformer->kernel_f = NULL;}
+  if (transformer->after_b)  {fftw_destroy_plan(transformer->after_b);  transformer->after_b  = NULL;}
+  if (transformer->before_b) {fftw_destroy_plan(transformer->before_b); transformer->before_b = NULL;}
   
   free(transformer); transformer = NULL;
   return;
 }
 
 void reset_FFT_t(FFT_t *transformer)
-{ 
-  int i;
-  for (i=0; i<transformer->length; i++) transformer->before[i] = 0.0;
+{
+  reset_fftw_complex(transformer->before, transformer->length);
   return;
 }
 
 void execute_FFT_t(FFT_t *transformer)
-{ 
-  fftw_execute(transformer->before_p);
+{
+  int length    = transformer->length;
+  double factor = 1.0 / (double)length;
+  fftw_complex *after = transformer->after;
   
-  //-- Complex coefficient multiplication in Fourier space
-  int i;
-  for (i=0; i<transformer->length_f; i++) {
-    transformer->after_f[i][0] = transformer->before_f[i][0] * transformer->kernel_f[i][0] - transformer->before_f[i][1] * transformer->kernel_f[i][1];
-    transformer->after_f[i][1] = transformer->before_f[i][0] * transformer->kernel_f[i][1] + transformer->before_f[i][1] * transformer->kernel_f[i][0];
-  }
+  //-- Go to Fourier space
+  fftw_execute(transformer->before_f);
   
-  fftw_execute(transformer->after_p);
+  //-- Multiplication
+  multiplication_fftw_complex(transformer->before, transformer->kernel, after, length);
+  
+  //-- Go to direct space
+  fftw_execute(transformer->after_b);
   
   //-- Rescale
-  for (i=0; i<transformer->length; i++) transformer->after[i] /= (double)transformer->length;
+  rescale_fftw_complex(after, length, factor);
+  return;
+}
+
+//----------------------------------------------------------------------
+//-- Functions related to FFT_arr
+
+FFT_arr *initialize_FFT_arr(int N_array, int N_type)
+{
+  FFT_arr *transArr = (FFT_arr*)malloc(sizeof(FFT_arr));
+  transArr->length  = N_array;
+  transArr->array   = (FFT_t**)malloc(N_array * sizeof(FFT_t*));
+  int i;
+  for (i=0; i<N_array; i++) transArr->array[i] = initialize_FFT_t(N_type);
+  return transArr;
+}
+
+void free_FFT_arr(FFT_arr *transArr)
+{
+  int i;
+  if (transArr->array) {
+    for (i=0; i<transArr->length; i++) {free_FFT_t(transArr->array[i]); transArr->array[i] = NULL;}
+  }
+  free(transArr); transArr = NULL;
+  return;
+}
+
+void reset_FFT_arr(FFT_arr *transArr)
+{ 
+  int i;
+  for (i=0; i<transArr->length; i++) reset_FFT_t(transArr->array[i]);
+  return;
+}
+
+void execute_FFT_arr(FFT_arr *transArr)
+{
+  int i;
+  for (i=0; i<transArr->length; i++) execute_FFT_t(transArr->array[i]);
   return;
 }
 
@@ -416,7 +573,7 @@ hist_t *initialize_hist_t(int length)
 void free_hist_t(hist_t *hist)
 {
   if (hist->x_lower) {free(hist->x_lower); hist->x_lower = NULL;}
-  if (hist->n)       {free(hist->n);       hist->n = NULL;}
+  if (hist->n)       {free(hist->n);       hist->n       = NULL;}
   free(hist); hist = NULL;
   return;
 }
@@ -454,6 +611,7 @@ void reset_hist_t(hist_t *hist)
 {
   int i;
   for (i=0; i<hist->length; i++) hist->n[i] = 0;
+  hist->n_tot = 0;
   return;
 }
 
@@ -501,6 +659,104 @@ hist_t *deepCopy_hist_t(hist_t *oldHist)
     newHist->n[i]       = oldHist->n[i];
   }
   return newHist;
+}
+
+//----------------------------------------------------------------------
+//-- Functions related to KDE_t
+
+KDE_t *initialize_KDE_t(int length)
+{
+  //-- length    = number of samples
+  //-- mean      = mean
+  //-- std       = standard deviation
+  //-- two_h_sq  = 2 * bandwidth^2
+  //-- amplitude = common amplitude factor
+  //-- *sample   = sample points
+  KDE_t *estimator  = (KDE_t*)malloc(sizeof(KDE_t));
+  estimator->length = length;
+  estimator->sample = (double*)malloc(length * sizeof(double));
+  return estimator;
+}
+
+void free_KDE_t(KDE_t *estimator)
+{
+  if (estimator->sample) {free(estimator->sample); estimator->sample = NULL;}
+  free(estimator); estimator = NULL;
+  return;
+}
+
+void set_KDE_t(KDE_t *estimator, double h)
+{
+  estimator->mean     = gsl_stats_mean(estimator->sample, 1, estimator->length);
+  estimator->variance = gsl_stats_variance_m(estimator->sample, 1, estimator->length, estimator->mean);
+  
+  if (h > 0) estimator->two_h_sq = 2 * h * h;
+  else {
+    //-- Use Silverman's rule
+    double factor       = 4.0 / (3.0 * estimator->length);
+    estimator->two_h_sq = 2 * pow(factor, 0.4) * estimator->variance;
+  }
+  estimator->amplitude = 1.0 / (estimator->length * sqrt(PI * estimator->two_h_sq));
+  
+  return;
+}
+
+double execute_KDE_t(KDE_t *estimator, double x)
+{
+  double dist_sq, sum = 0.0;
+  int i;
+  for (i=0; i<estimator->length; i++) {
+    dist_sq = pow(x - estimator->sample[i], 2);
+    sum += exp(-dist_sq / estimator->two_h_sq);
+  }
+  return estimator->amplitude * sum;
+}
+
+#define N 5000
+double integrate_KDE_t(KDE_t *estimator, double x)
+{
+  //-- Fixed path at 10-sigma / N
+  double dx  = 10 * sqrt(estimator->variance) / (double)N;
+  double sum = 0.0;
+  
+  int i;
+  if (x > estimator->mean) {
+    sum += 0.5 * (execute_KDE_t(estimator, x + N*dx) + execute_KDE_t(estimator, x));
+    for (i=1; i<N; i++) sum += execute_KDE_t(estimator, x + i*dx);
+    sum *= dx;
+    sum = 1 - sum;
+  }
+  else {
+    sum += 0.5 * (execute_KDE_t(estimator, x - N*dx) + execute_KDE_t(estimator, x));
+    for (i=1; i<N; i++) sum += execute_KDE_t(estimator, x - i*dx);
+    sum *= dx;
+  }
+  
+  return sum;
+}
+#undef N
+
+//----------------------------------------------------------------------
+//-- Functions related to KDE_arr
+
+KDE_arr *initialize_KDE_arr(int N_array, int N_type)
+{
+  KDE_arr *estArr = (KDE_arr*)malloc(sizeof(KDE_arr));
+  estArr->length  = N_array;
+  estArr->array   = (KDE_t**)malloc(N_array * sizeof(KDE_t*));
+  int i;
+  for (i=0; i<N_array; i++) estArr->array[i] = initialize_KDE_t(N_type);
+  return estArr;
+}
+
+void free_KDE_arr(KDE_arr *estArr)
+{
+  int i;
+  if (estArr->array) {
+    for (i=0; i<estArr->length; i++) {free_KDE_t(estArr->array[i]); estArr->array[i] = NULL;}
+  }
+  free(estArr); estArr = NULL;
+  return;
 }
 
 //----------------------------------------------------------------------
@@ -568,25 +824,6 @@ void routineTime(clock_t start, clock_t stop)
   }
   else                printf("routine time = %d h %d m %d s\n", hours, minutes, (int)seconds);
   return;
-}
-
-//----------------------------------------------------------------------
-//-- Math functions
-
-int imod(int N, int i)
-{ 
-  //-- mod function ranged in [0, N-1]
-  if (i < 0)  return imod(N, i + N);
-  if (i >= N) return imod(N, i - N);
-  return i;
-}
-
-int imodc(int N, int i)
-{ 
-  //-- mod function centered on 0, positive side is priviledged if N is even
-  if (i <= -N + N/2) return imodc(N, i + N);
-  if (i > N/2)       return imodc(N, i - N);
-  return i;
 }
 
 //----------------------------------------------------------------------
