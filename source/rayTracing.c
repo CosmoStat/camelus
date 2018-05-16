@@ -1031,8 +1031,8 @@ void lensingForHalo(cosmo_hm *cmhm, halo_t *h, gal_map *gMap, int doKappa, error
       if (i < 0 || i >= N1) continue;
       gList = gMap->map[i+jN1];
       for (k=0, gNode=gList->first; k<gList->size; k++, gNode=gNode->next) {
-	lensingForPair(cmhm, h, gNode->g, doKappa, err);
-	forwardError(*err, __LINE__,);
+		lensingForPair(cmhm, h, gNode->g, doKappa, err);
+		forwardError(*err, __LINE__,);
       }
     }
   }
@@ -1935,7 +1935,7 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
 			posg[0] =  cos(theta) * sin(phi) * r + h->pos[0];
 			posg[1] = sin(theta) * sin(phi) * r + h->pos[1];
 
-			if((posg[0] > 180)||(posg[0]<0)||(posg[1] > 180)||(posg[1]<0)){
+			if((posg[0] > hMap->limits[1])||(posg[0]<hMap->limits[0])||(posg[1] > hMap->limits[3])||(posg[1]<hMap->limits[2])){
 			}else{
 				append_gal_map(cmhm, gMap, h->z, h->w, Ds,posg, err); forwardError(*err, __LINE__,);
 		  	  	ii2=ii2+1;
@@ -1947,3 +1947,41 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
   printf("Nb galaxies created arrondi : %i \n",ii2);
   return;
 }
+
+
+void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
+{
+
+	gal_list *gList;
+	gal_node *gNode;
+ 	gal_t *g;
+	int i,j;
+	double b=0.00856 ;
+	double n_mean,m  ;
+	double a,inv_surf ;
+	double n_local_mean ;
+	double gamma_new[2] ;
+	n_mean = gMap->total ;
+	inv_surf = 1./ (gMap->theta_pix * gMap->theta_pix) ;
+	n_mean = n_mean/( gMap->length)*inv_surf  ;
+	a = -b/n_mean ;
+
+	for (i=0; i<gMap->length; i++) {
+		gList = gMap->map[i];
+		n_local_mean = gList->length * inv_surf ;
+		m= a + b*n_local_mean;	
+
+		for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {
+			g=gNode->g;
+			gamma_new[0] =g->gamma[0]*(1.+m);
+			gamma_new[1] =g->gamma[1]*(1.+m);
+			appendWithSignal_gal_map(cmhm, gMap_bias, g->z, g->pos,g->kappa,gamma_new, err);
+			forwardError(*err, __LINE__,);
+		}	
+  			printf(" m : %f \n",m);
+	}
+
+	return;
+}
+
+
