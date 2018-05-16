@@ -114,14 +114,13 @@ def ConvertCats(galcat_dir, filename, randomname, bin_edges, savestub, savestub_
     print ' > Applying bias to galaxy catalog {}.'.format(filename)
     galcat = np.loadtxt(galcat_dir+filename)
     randoms = np.loadtxt(galcat_dir+randomname)
-    # read average density
-    nmean = read_n_mean(galcat_dir+filename)
     # compute local densities from galaxy catalogs
     delta = ComputeDensity(galcat)
+    # compute average density
+    nmean = np.mean(delta[0])
     # apply bias
     galcat_b = ApplyBias(galcat, delta, nmean)
     print ' > Bias applied.'
-    galcat_b = np.copy(galcat)
     # apply cutoff
     print ' > Applying cutoff to galaxy catalogs {}.'.format(filename)
     select_idx = CutOff(galcat[:,2], randoms[:,2], bin_edges, dz)
