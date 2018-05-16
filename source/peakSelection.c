@@ -643,7 +643,6 @@ void doPeakList_withInputs(char fileName[],char end[],cosmo_hm *cmhm, peak_param
    sprintf(fpeakListPos, "peakListPos_%s",end);
    sprintf(fpeakHist, "peakhist_%s",end);
 
-   //halo_map *hMap       = initialize_halo_map(peak->resol[0], peak->resol[1], peak->theta_pix, err); forwardError(*err, __LINE__,);
   sampler_t *galSamp   = initialize_sampler_t(peak->N_z_gal);
   setGalaxySampler(cmhm, peak, galSamp, err);                                                       forwardError(*err, __LINE__,);
   gal_map *gMap        = initialize_gal_map(peak->resol[0], peak->resol[1], peak->theta_pix, err);  forwardError(*err, __LINE__,);
@@ -657,16 +656,14 @@ void doPeakList_withInputs(char fileName[],char end[],cosmo_hm *cmhm, peak_param
   double_arr *peakList = initialize_double_arr(length);
   hist_t *nuHist       = initialize_hist_t(peak->N_nu);
   setHist_nu(peak, nuHist);
- // printf(" read inpute 0 : \"%s\" \n", fileName);
+
   if (fileName == NULL) {
     //-- no input files
     	printf("Problem input files missing \n");
   }
   else {
-    //printf(" Input file for halo : \"%s\" \n", fileName);
   	printf(" Input file for galaxies : \"%s\" \n", fileName);
-	//read_halo_map(fileName, cmhm, hMap, err);                                forwardError(*err, __LINE__,);
-    //read_gal_map2(fileName2, cmhm,peak, gMap, err);                                forwardError(*err, __LINE__,);
+    read_gal_map(fileName, cmhm,peak, gMap, err);                                forwardError(*err, __LINE__,);
   }
   makeMapAndOutputAll2(fileName, cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, err); forwardError(*err, __LINE__,);
 
@@ -684,8 +681,6 @@ void doPeakList_withInputs(char fileName[],char end[],cosmo_hm *cmhm, peak_param
   makeHist(peakList, nuHist, silent);
   outputHist(fpeakHist, nuHist);
 
-
-  //free_halo_map(hMap);
   free_sampler_t(galSamp);
   free_gal_map(gMap);
   free_short_mat(CCDMask);
