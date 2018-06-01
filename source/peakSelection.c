@@ -1138,7 +1138,8 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
 	//forwardError(*err, __LINE__,);
 
   	printf("PEAKS \n");
-	 makeMapAndOutputAll2(GalaxyFileName2, cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, err); forwardError(*err, __LINE__,);
+	makeMapAndOutputAll2(GalaxyFileName2, cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, err); forwardError(*err, __LINE__,);
+	printf("Test \n");
 	selectPeaks(peak, kMap, peakList, err);
 	forwardError(*err, __LINE__,);
     sprintf(name, "peakList_%d", i+1);
