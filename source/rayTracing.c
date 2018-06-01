@@ -1992,9 +1992,9 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
   int i,j,idz;
   size_t nbin = floor(peak->z_halo_max/dz);
   int nhod[nbin];
-
+	printf("ok\n");
   memset(nhod, 0, nbin);
-
+	printf("ok menset\n");
   for (i=0; i<gMap->length; i++) {
     gList = gMap->map[i];	
 
@@ -2002,7 +2002,9 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
     }
     g = gNode->g;
     idz = floor(g->z/dz);
+	printf("ok idz %i \n",idz);
     nhod[idz] += 1;
+	printf("ok2 idz %i \n",idz);
   }
 
   for (i=0; i<gMap->length; i++) {
