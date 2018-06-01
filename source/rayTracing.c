@@ -1995,6 +1995,7 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
   int nhod[nbin];
   
   memset(nhod, 0, nbin);
+
   for (i=0; i<gMap->length; i++) {
     if (gList->first != NULL)
       {

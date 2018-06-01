@@ -1128,6 +1128,9 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
   	printf("CUT OFF on gMap_bias \n");
 	CutOff(gMap_bias,dz,peak,err);
 
+  	printf("LENSING on gMap \n");
+  makeMapAndOutputAll3(cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, err); forwardError(*err, __LINE__,);
+  	forwardError(*err, __LINE__,);
 
 	selectPeaks(peak, kMap, peakList, err);
 	forwardError(*err, __LINE__,);
@@ -1135,6 +1138,9 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
     outputPeakList(name, peak, peakList);
 
   	printf("PEAKS BIAS \n");
+	
+  makeMapAndOutputAll3(cmhm, peak_bias, gMap_bias, FFTSmoother, DCSmoother, kMap_bias, err); forwardError(*err, __LINE__,);
+  	forwardError(*err, __LINE__,);
 	selectPeaks(peak_bias, kMap_bias, peakList, err);
 	forwardError(*err, __LINE__,);
     sprintf(name, "peakList_bias_%d", i+1);
