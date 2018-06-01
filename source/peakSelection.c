@@ -1071,7 +1071,7 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
   	int length  = (peak->resol[0] - 2 * peak->bufferSize) * (peak->resol[1] - 2 * peak->bufferSize);
  	char HaloFileName2[STRING_LENGTH_MAX], GalaxyFileName2[STRING_LENGTH_MAX], name[STRING_LENGTH_MAX] ;
   	int i;
-	double dz=2./3. ;
+	double dz=2./30. ;
 	i=0;
   
   	printf("-----------------------------  HOD galaxy Ngal with bias -------------------------------\n");
@@ -1126,7 +1126,7 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
   	printf("CUT OFF on gMap \n");
 	CutOff(gMap,dz,peak,err);
   	printf("CUT OFF on gMap_bias \n");
-	CutOff(gMap_bias,dz,peak_bias,err);
+	CutOff(gMap_bias,dz,peak,err);
 
 
   //	lensingCatalogueAndOutputAll2(GalaxyFileName2,cmhm, peak, hMap, gMap_bias, err);

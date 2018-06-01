@@ -1986,56 +1986,81 @@ void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
 
 void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
 {
+  printf("ok\n");
   gal_list *gList;
   gal_node *gNode, *pgNode;
   gal_t *g;
   int i,j,idz;
   size_t nbin = floor(peak->z_halo_max/dz);
   int nhod[nbin];
-	printf("ok\n");
+  
+  printf("ok\n");
+  printf("nbin %i\n",nbin);
   memset(nhod, 0, nbin);
-	printf("ok menset\n");
+  printf("ok memset\n");
   for (i=0; i<gMap->length; i++) {
-    gList = gMap->map[i];	
-
-    for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {
-    }
-    g = gNode->g;
-    idz = floor(g->z/dz);
-	printf("ok idz %i \n",idz);
-    nhod[idz] += 1;
-	printf("ok2 idz %i \n",idz);
-  }
-
-  for (i=0; i<gMap->length; i++) {
-    gList = gMap->map[i];	
-    pgNode = gList->first;
-    g = pgNode->g;
-    while (TestRand(g->z, &nhod, dz) == 1)
-      {	
-	gList->first = pgNode->next;
-	free(pgNode);
-	pgNode = gList->first;
-	gList->size -= 1;
-	gList->length -= 1;
-	free(g);
-	g = pgNode->g;
-      }
-    for (j=1, gNode=pgNode->next; j<gList->size; j++, gNode=gNode->next) {
-      g = pgNode->g;
-      while (TestRand(g->z, &nhod, dz) == 1)
-	{
-	  pgNode->next = gNode->next;
-	  free(gNode);
-	  gNode = pgNode->next;
-	  gList->size -= 1;
-	  gList->length -= 1;
-	  free(g);
+    if (gList->first != NULL)
+      {
+	//printf("mapi \n");
+	gList = gMap->map[i];
+	//printf("mapi2 \n");
+	
+	for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {
+	  
 	  g = gNode->g;
+	  idz = floor(g->z/dz);
+	  //printf("ok idz %i \n",idz);
+	  nhod[idz] += 1;
+	  //printf("ok2 idz %i \n",idz);
 	}
-      pgNode = gNode;
-    }
+      }
   }
+  printf("nhod ok\n");
+  for (i=0; i<gMap->length; i++) {
+    //printf("i = %i \n",i);
+    gList = gMap->map[i];
+    if (gList->first != NULL)
+      {
+
+
+	pgNode = gList->first;
+	g = pgNode->g;
+	//printf("entree boucle\n");
+	while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size >1))
+	  {
+	    //printf("test ok\n");
+	    gList->first = pgNode->next;
+	    //printf("assignation ok\n");
+	    free(pgNode);
+	    //printf("free ok\n");
+	    pgNode = gList->first;
+	    //printf("reassignation ok\n");
+	    gList->size -= 1;
+	    gList->length -= 1;
+	    //printf("size ok\n");
+	    free(g);
+	    //printf("refree ok\n");
+	    g = pgNode->g;
+	    //printf("gal ok\n");
+	  }
+	//printf("first ok\n");
+	for (j=1, gNode=pgNode->next; j<gList->size; j++, gNode=gNode->next) {
+	  
+	  while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size>j+1))
+	    {
+	      pgNode->next = gNode->next;
+	      free(gNode);
+	      gNode = pgNode->next;
+	      gList->size -= 1;
+	      gList->length -= 1;
+	      free(g);
+	      g = gNode->g;
+	    }
+	  pgNode = gNode;
+	}
+      }
+  }
+  printf("cut off done \n");
   return;
 }
 
