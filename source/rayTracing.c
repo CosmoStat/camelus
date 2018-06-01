@@ -1994,10 +1994,7 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
   size_t nbin = floor(peak->z_halo_max/dz);
   int nhod[nbin];
   
-  printf("ok\n");
-  printf("nbin %i\n",nbin);
   memset(nhod, 0, nbin);
-  printf("ok memset\n");
   for (i=0; i<gMap->length; i++) {
     if (gList->first != NULL)
       {
@@ -2015,7 +2012,6 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
 	}
       }
   }
-  printf("nhod ok\n");
   for (i=0; i<gMap->length; i++) {
     //printf("i = %i \n",i);
     gList = gMap->map[i];
