@@ -162,5 +162,12 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
 void outputFastSimul_galaxies2(char name_cmhm[], char name[], cosmo_hm *cmhm, peak_param *peak, halo_map *hMap,gal_map *gMap) ;
 
 double NFW(double x);
+
+void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err);
+void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err);
+double CamelusNz(double z);
+int TestRand(double z, int *nhod, double dz);
+
+  
 #endif
 
