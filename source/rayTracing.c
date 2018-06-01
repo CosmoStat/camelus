@@ -1956,7 +1956,7 @@ void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
 	gal_node *gNode;
  	gal_t *g;
 	int i,j;
-	double b=0.00856 ;
+	double b=-0.00856 ;
 	double n_mean,m  ;
 	double a,inv_surf ;
 	double n_local_mean ;
@@ -1984,4 +1984,86 @@ void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
 	return;
 }
 
+void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
+{
+  gal_list *gList;
+  gal_node *gNode, *pgNode;
+  gal_t *g;
+  int i,j,idz;
+  size_t nbin = floor(peak->z_halo_max/dz);
+  int nhod[nbin];
 
+  memset(nhod, 0, nbin);
+
+  for (i=0; i<gMap->length; i++) {
+    gList = gMap->map[i];	
+
+    for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {
+    }
+    g = gNode->g;
+    idz = floor(g->z/dz);
+    nhod[idz] += 1;
+  }
+
+  for (i=0; i<gMap->length; i++) {
+    gList = gMap->map[i];	
+    pgNode = gList->first;
+    g = pgNode->g;
+    while (TestRand(g->z, &nhod, dz) == 1)
+      {	
+	gList->first = pgNode->next;
+	free(pgNode);
+	pgNode = gList->first;
+	gList->size -= 1;
+	gList->length -= 1;
+	free(g);
+	g = pgNode->g;
+      }
+    for (j=1, gNode=pgNode->next; j<gList->size; j++, gNode=gNode->next) {
+      g = pgNode->g;
+      while (TestRand(g->z, &nhod, dz) == 1)
+	{
+	  pgNode->next = gNode->next;
+	  free(gNode);
+	  gNode = pgNode->next;
+	  gList->size -= 1;
+	  gList->length -= 1;
+	  free(g);
+	  g = gNode->g;
+	}
+      pgNode = gNode;
+    }
+  }
+  return;
+}
+
+
+double CamelusNz(double z)
+{
+  double alpha = 2.;
+  double beta = 1.;
+  double z_0 = 0.5;
+  double x;
+  
+  x = z/z_0;
+  return pow(x,alpha) * exp(-pow(x,beta));
+}
+
+int TestRand(double z, int *nhod, double dz)
+{
+  int idz;
+  double nz;
+
+  idz = floor(z/dz);
+  nz = CamelusNz(z);
+  
+  if (nhod[idz]<nz)
+    {
+      return 0;
+    }
+  if ( rand()/(double)RAND_MAX*nhod[idz]>nz)
+    {
+      return 1;
+    }
+  return 0;    
+}
