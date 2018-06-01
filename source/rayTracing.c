@@ -1978,7 +1978,7 @@ void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
 			appendWithSignal_gal_map(cmhm, gMap_bias, g->z, g->pos,g->kappa,gamma_new, err);
 			forwardError(*err, __LINE__,);
 		}	
-  			printf(" m : %f \n",m);
+  			//printf(" m : %f \n",m);
 	}
 
 	return;

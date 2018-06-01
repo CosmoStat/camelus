@@ -1069,8 +1069,9 @@ void doProduce_Catalog_DM_galaxies_HOD_N(int N, char CmhmName[], char HaloFileNa
 void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFileName[], char GalaxyFileName[], cosmo_hm *cmhm, peak_param *peak, error **err)
 {
   	int length  = (peak->resol[0] - 2 * peak->bufferSize) * (peak->resol[1] - 2 * peak->bufferSize);
- 	char HaloFileName2[STRING_LENGTH_MAX], GalaxyFileName2[STRING_LENGTH_MAX];
+ 	char HaloFileName2[STRING_LENGTH_MAX], GalaxyFileName2[STRING_LENGTH_MAX], name[STRING_LENGTH_MAX] ;
   	int i;
+	double dz=2./3. ;
 	i=0;
   
   	printf("-----------------------------  HOD galaxy Ngal with bias -------------------------------\n");
@@ -1081,7 +1082,25 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
     halo_map *hMap       = initialize_halo_map(peak->resol[0], peak->resol[1], peak->theta_pix, err);
  	gal_map *gMap = initialize_gal_map(peak->resol[0], peak->resol[1], peak->theta_pix, err); 
  	gal_map *gMap_bias = initialize_gal_map(peak->resol[0], peak->resol[1], peak->theta_pix, err); 
- 
+   	double_arr *peakList = initialize_double_arr(length);
+   	double_arr *peakList_bias = initialize_double_arr(length);
+ 	map_t *kMap          = initialize_map_t(peak->resol[0], peak->resol[1], peak->theta_pix, err);
+    forwardError(*err, __LINE__,);
+ 	map_t *kMap_bias          = initialize_map_t(peak->resol[0], peak->resol[1], peak->theta_pix, err); 
+	forwardError(*err, __LINE__,);
+
+	short_mat *CCDMask   = initializeMask(peak, err);   
+    forwardError(*err, __LINE__,);
+
+	FFT_arr *FFTSmoother = initialize_FFT_arr(peak->smootherSize, peak->FFTSize);
+	if (peak->FFT_nbFilters) makeKernel(peak, FFTSmoother);
+	FFT_arr *DCSmoother  = initialize_FFT_arr(peak->smootherSize, peak->FFTSize);
+	FFT_arr *variance    = initialize_FFT_arr(peak->smootherSize, peak->FFTSize);
+	if (peak->FFT_nbFilters) makeKernelForVariance(peak, variance);
+
+	hist_t *nuHist       = initialize_hist_t(peak->N_nu);
+	setHist_nu(peak, nuHist);
+
    //-- Carry out fast simulation
     sampler_arr *sampArr = initialize_sampler_arr(peak->N_z_halo, peak->N_M);
     setMassSamplers(cmhm, peak, sampArr, err); 
@@ -1091,22 +1110,46 @@ void doProduce_Catalog_DM_galaxies_HOD_with_bias( char CmhmName[], char HaloFile
 
     sprintf(HaloFileName2, "%s_%3.3d",HaloFileName, i+1);
     sprintf(GalaxyFileName2, "%s_%3.3d",GalaxyFileName, i+1);
+
+	printf("CREATE HALOES + GALAXIES (NFW+HOD) \n");	
     outputFastSimul_galaxies2(CmhmName,HaloFileName2,cmhm,peak,hMap,gMap);
  	forwardError(*err, __LINE__,);
 
+  	printf("LENSING COMPUTE \n");	
   	lensingForMap(cmhm, peak, hMap, gMap, err); forwardError(*err, __LINE__,);
 	forwardError(*err, __LINE__,);
 
+  	printf(" ADD BIAS on gMap  \n");
 	add_bias(cmhm,gMap, gMap_bias, err);
 	forwardError(*err, __LINE__,);
 
-  	//lensingCatalogueAndOutputAll2(GalaxyFileName2,cmhm, peak, hMap, gMap, err);
-  	//lensingForMap(cmhm, peak, hMap, gMap, err); forwardError(*err, __LINE__,);
+  	printf("CUT OFF on gMap \n");
+	CutOff(gMap,dz,peak,err);
+  	printf("CUT OFF on gMap_bias \n");
+	CutOff(gMap_bias,dz,peak_bias,err);
+
+
+  //	lensingCatalogueAndOutputAll2(GalaxyFileName2,cmhm, peak, hMap, gMap_bias, err);
+  //	lensingForMap(cmhm, peak, hMap, gMap, err); forwardError(*err, __LINE__,);
+  //forwardError(*err, __LINE__,);
+
+  //	lensingCatalogueAndOutputAll2(GalaxyFileName2,cmhm, peak, hMap, gMap, err);
+  //	lensingForMap(cmhm, peak_bias, hMap, gMap_bias, err); forwardError(*err, __LINE__,);
 	//forwardError(*err, __LINE__,);
 
-  	//lensingCatalogueAndOutputAll2(GalaxyFileName2,cmhm, peak, hMap, gMap, err);
-  	//lensingForMap(cmhm, peak_bias, hMap, gMap_bias, err); forwardError(*err, __LINE__,);
-	//forwardError(*err, __LINE__,);
+  	printf("PEAKS \n");
+	 makeMapAndOutputAll2(GalaxyFileName2, cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, err); forwardError(*err, __LINE__,);
+	selectPeaks(peak, kMap, peakList, err);
+	forwardError(*err, __LINE__,);
+    sprintf(name, "peakList_%d", i+1);
+    outputPeakList(name, peak, peakList);
+
+  	printf("PEAKS BIAS \n");
+	makeMapAndOutputAll3(GalaxyFileName2, cmhm, peak_bias, gMap_bias, FFTSmoother, DCSmoother, kMap_bias, err); forwardError(*err, __LINE__,);
+	selectPeaks(peak_bias, kMap_bias, peakList, err);
+	forwardError(*err, __LINE__,);
+    sprintf(name, "peakList_bias_%d", i+1);
+    outputPeakList(name, peak_bias, peakList);
 
     free_sampler_arr(sampArr);
     free_halo_map(hMap);
