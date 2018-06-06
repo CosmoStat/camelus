@@ -267,6 +267,8 @@ void output_halo_map(FILE *file, peak_param *peak, halo_map *hMap)
 
 double massFct(cosmo_hm_params *cANDp, double mass, error **err)
 {
+  double aa=cANDp->a ;
+  double dn = LN_10 * ( aa*aa*aa )* dn_dlnM(mass, (void*)cANDp, err); forwardError(*err, __LINE__, -1.0);
   return dn;
 }
 
