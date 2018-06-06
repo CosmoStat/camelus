@@ -61,13 +61,33 @@ def ApplyBias(galcat, delta, n, b=-0.00856):
 def CamelusNz(z, alpha=2., beta=1., z_0=.5):
     x = z/z_0
     return x**alpha * np.exp(-x**beta)
+    
+def PerMagNz(z, a, b, c, A):
+    """ n(z) as in equation (8) of Ilbert et al., 2008
+    """
+    num = z**a + z**(a*b)
+    den = z**b + c
+    return A*num/den
+    
+def CosmosNz(z):
+    """ Full n(z) by summing magnitude bins' n(z) from the COSMOS best fit
+    parameters as in Table 2, Ilbert et al., 2008
+    """
+    Mags = [22, 22.5, 23, 23.5, 24, 24.5]
+    aPerMag = [0.497, 0.448, 0.372, 0.273, 0.201, 0.126]
+    bPerMag = [12.643, 9.251, 6.736, 5.281, 4.494, 4.146]
+    cPerMag = [0.381, 0.742, 1.392, 2.614, 3.932, 5.925]
+    APerMag = [4068.19, 9151.98, 18232.24, 35508.58, 60306.30, 103340.04]
+    
+    nzPerMag = [PerMagNz(z, a, b, c, A) for (a,b,c,A) in zip(aPerMag,bPerMag,cPerMag,APerMag)]
+    return np.sum(nzPerMag)
 
-def CutOff(fullzs, bin_edges, nobj, dz=None):
+def CutOff(fullzs, bin_edges, nobj, nz_func=CamelusNz, dz=None):
     """apply cut off
     """
     select_idx = []
     zmid = [rf-(rf-lf)/2 for lf, rf in zip(bin_edges, bin_edges[1:])]
-    nz = np.array([CamelusNz(z) for z in zmid])
+    nz = np.array([nz_func(z) for z in zmid])
     nz = (nz * nobj/np.sum(nz)).astype(int)
     for nb_rand, (lf, rf) in zip(nz,zip(bin_edges, bin_edges[1:])):
         print '   > Working on z bin [{},{}]'.format(lf,rf)
