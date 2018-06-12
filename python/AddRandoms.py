@@ -23,6 +23,7 @@ def AddRandoms(galcat_dir, filename, bin_edges, savestub, dz):
     if not np.all(np.array(popz) == np.array(zmid)):
         print '/!\ REDSHIFT MISMATCH! /!\ '
     
+    newgalcat = galcat[:,:3]
     for nb_rand, (lf, rf) in zip(NumberCounts,zip(bin_edges, bin_edges[1:])):
         print '   > Working on z bin [{},{}]'.format(lf,rf)
         nb_popgal = len(np.where((fullzs>lf) & (fullzs<=rf))[0])
@@ -33,15 +34,14 @@ def AddRandoms(galcat_dir, filename, bin_edges, savestub, dz):
         xs, ys = np.random.rand(2,needed_rands) * np.array([xmax, ymax]).reshape(-1,1) + np.array([
                         xmin, ymin]).reshape(-1,1)
         zs = np.ones(needed_rands) * rf-(rf-lf)/2
-        dummy = np.zeros(needed_rands)
-        newrows = np.vstack((xs, ys, zs, dummy, dummy, dummy)).T
-        galcat = np.vstack((galcat,newrows))
-    print ' > Randoms added: catalog size now {}'.format(galcat.shape[0])
+        newrows = np.vstack((xs, ys, zs)).T
+        newgalcat = np.vstack((newgalcat[:,:3],newrows))
+    print ' > Randoms added: catalog size now {}'.format(newgalcat.shape[0])
     
     idnb = '_'
     for digit in [char for char in filename[-3:] if char.isdigit()]:
         idnb += digit
-    np.savetxt(galcat_dir+savestub+idnb, galcat)
+    np.savetxt(galcat_dir+savestub+idnb, newgalcat)
 
 
 def main():
