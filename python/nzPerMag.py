@@ -190,3 +190,4 @@ plt.close()
 # save for importation within cutoff_nz.py
 np.save('./Mags.npy', AllMags)
 np.save('./nzPerMag.npy', nzFinal)
+np.save('./zs.npy', zmid)
