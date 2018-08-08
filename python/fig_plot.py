@@ -220,9 +220,11 @@ def histogram_bias(fich,fichbias,N):
 		data=np.linspace(1,5,nbin_snr)
 
 		plt.errorbar(data[:(nbin_snr-1)]+0.25, mean_snr[:(nbin_snr-1)], yerr=mean_snr_error[:(nbin_snr-1)],fmt='+',color='crimson',alpha=0.7)
-		plt.step(data,mean_snr,where='post',color='crimson',alpha=1,label="NoBias")
-
-
+		#plt.step(data,mean_snr,where='post',color='crimson',alpha=1,label="NoBias")
+		plt.step(data,mean_snr,where='post',color='crimson',alpha=1,label="Clustered galaxies")
+		#plt.step(data,mean_snr,where='post',color='crimson',alpha=1,label="Detected sources")
+		
+        
 		fich2=fichbias+'001'
 		dat = np.loadtxt(fich2)
 		xmin =dat[:,0]
@@ -255,7 +257,9 @@ def histogram_bias(fich,fichbias,N):
 		data=np.linspace(1,5,nbin_snr)
 
 		plt.errorbar(data[:(nbin_snr-1)]+0.25, mean_snr[:(nbin_snr-1)], yerr=mean_snr_error[:(nbin_snr-1)],fmt='+',color='deepskyblue',alpha=0.7)
-		plt.step(data,mean_snr,where='post',color='deepskyblue',alpha=1,label="Bias")
+		#plt.step(data,mean_snr,where='post',color='deepskyblue',alpha=1,label="Bias")
+		plt.step(data,mean_snr,where='post',color='navy',alpha=1,label="Random galaxies")
+		#plt.step(data,mean_snr,where='post',color='deepskyblue',alpha=1,label="Full population")
 		plt.title('Peak abundance histogram (averaged over {0} realizations)'.format(N))
 		plt.xlabel('SNR')
 		plt.ylabel('Peak number')
