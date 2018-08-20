@@ -308,7 +308,7 @@ void printInstructions(int task, int printHeader)
         case 971:
            printf("  ./camelus 971 N paramhm halocat galcat   # create catalog haloes with Ngal, corresponding galaxy catalog and its lensing quantities \n");
         case 999:
-           printf("  ./camelus 999 paramhm end			 # create galcat, halocat, and histogram with/without bais \n");
+           printf("  ./camelus 999 paramhm halocat galcat		 # create galcat, halocat, and histogram with/without bias \n");
            break;
      }
   }
