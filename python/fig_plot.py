@@ -157,6 +157,50 @@ def z_function_halo(fich,zbin):
 		plt.title(' Halo mass function ')	
 		return
 
+
+
+def histogram_bias2(fich,fichbias,N):
+	plt.close('all')
+	ii=1
+
+	fich2=fich+'{:03d}'.format(ii)
+	dat = ascii.read(fich2)
+	xmin =dat['col1']
+	xmax=dat['col2']
+	snr=dat['col3']
+	plt.step(xmin,snr,where='post',color='crimson',alpha=0.1,label='no bias')
+
+
+	fich2=fichbias+'{:03d}'.format(ii)
+	dat = ascii.read(fich2)
+	xmin =dat['col1']
+	xmax=dat['col2']
+	snr=dat['col3']
+	plt.step(xmin,snr,where='post',color='crimson',alpha=0.1,label='bias')
+
+	for ii in range(2,N):
+			fich2=fich+'{:03d}'.format(ii)
+			dat = ascii.read(fich2)
+			xmin =dat['col1']
+			xmax=dat['col2']
+			snr=dat['col3']
+			plt.step(xmin,snr,where='post',color='crimson',alpha=0.1)
+
+	for ii in range(2,N):
+			fich2=fichbias+'{:03d}'.format(ii)
+			dat = ascii.read(fich2)
+			xmin =dat['col1']
+			xmax=dat['col2']
+			snr=dat['col3']
+			plt.step(xmin,snr,where='post',color='deepskyblue',alpha=0.1)
+
+	plt.title('Peak abundance histogram (averaged over {0} realizations)'.format(N))
+	plt.xlabel('SNR')
+	plt.ylabel('Peak number')
+	#plt.legend()
+	plt.show()
+	return
+
 def histogram_bias(fich,fichbias,N):
 	plt.close('all')
 
@@ -264,7 +308,7 @@ def histogram_bias(fich,fichbias,N):
 		plt.xlabel('SNR')
 		plt.ylabel('Peak number')
 		plt.legend()
-		plt.savefig('Plots/PeakHists.pdf')
+		#plt.savefig('Plots/PeakHists.pdf')
 		return
 
 
@@ -402,28 +446,90 @@ def map_peak(fich,fich2,lim):
 
 ##########################################
 
-def read_catalogue_galaxies(fich):
-	dat = np.loadtxt(fich)
+def read_catalogue_haloANDgalaxies(fich1,fich2,z,dz):
+	dat = np.loadtxt(fich1)
 	theta_x = dat[:,0]
 	theta_y = dat[:,1]
+	theta_z = dat[:,3]
+	theta_x[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
+	theta_y[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
+
+
+	dat = np.loadtxt(fich2)
+	thetag_x = dat[:,0]
+	thetag_y = dat[:,1]
+	thetag_z = dat[:,2]
+	thetag_x[(thetag_z>(z+dz/2.))|(thetag_z<(z-dz/2.))] = -100
+	thetag_y[(thetag_z>(z+dz/2.))|(thetag_z<(z-dz/2.))] = -100
+
+
+
+
+	plt.close('all')
+
+	plt.figure(1)
+	plt.title( ' dark matter haloes')
+	plt.plot(theta_x ,theta_y,'.', color='blue', alpha=0.1)
+	plt.xlim([-10,190])
+	plt.ylim([-10,190])
+	plt.show()
+
+	plt.figure(2)	
+	plt.title( 'galaxy source positions')
+	plt.plot(thetag_x ,thetag_y,'.', color='red', alpha=0.1)
+	plt.xlim([-10,190])
+	plt.ylim([-10,190])
+	plt.show()
+	return ;
+
+##########################################
+def read_catalogue_galaxies1(fich):
+	dat = np.loadtxt(fich)
 	red = dat[:,2]
-	k  = dat[:,3]
-	g1 = dat[:,4]
-	g2 = dat[:,5]
-	N=np.size(k)
 
 	plt.close('all')
 	plt.figure(1)
 
-	
-	d1 =np.reshape(red, (1,np.product(red.shape)))[0]
-	plt.hist(d1,bins=100,color = 'limegreen', edgecolor = 'green',alpha=0.60, normed=1)
+	plt.hist(red,bins=10,color = 'limegreen', edgecolor = 'green',alpha=0.60,normed=True)
+
+	zz=np.linspace(min(red),max(red))
+	nn=np.copy(zz)
+	for i in range(np.size(zz)):
+		nn[i]=nnz(zz[i])
+	plt.plot(zz,nn,alpha=0.30,color='crimson')
+	#plt.yscale('log')
+	plt.title( 'Redshift histogramm of galaxy sources')
+	plt.ylabel(r'\LARGE{$\rm N_{sources}$}')
+	plt.xlabel(r'Redshift')
+
+	return
+
+
+def read_catalogue_galaxies2(fich,fich2):
+	dat = np.loadtxt(fich)
+	red = dat[:,2]
+
+	dat = np.loadtxt(fich2)
+	red2 = dat[:,2]+0.03
+
+	plt.close('all')
+	plt.figure(1)
+
+	plt.hist(red,bins=100,color = 'limegreen', edgecolor = 'green',alpha=0.60)
+	plt.hist(red2,bins=100,color = 'deepskyblue', edgecolor = 'deepskyblue',alpha=0.90)
+
+	zz=np.linspace(min(red),max(red))
+	nn=np.copy(zz)
+	for i in range(np.size(zz)):
+		nn[i]=nnz(zz[i])*np.size(red2)
+	plt.plot(zz,nn,alpha=0.30,color='crimson')
 	plt.yscale('log')
 	plt.title( 'Redshift histogramm of galaxy sources')
 	plt.ylabel(r'\LARGE{$\rm N_{sources}$}')
 	plt.xlabel(r'Redshift')
 
-	return ;
+	return 
+
 ########################################
 
 def read_catalog_halo(fich,opt):
@@ -530,8 +636,6 @@ def redefine_Galaxy_catalogue(fich2,fich3,zz,dz):
 	plt.ylim([-10,190])
 	plt.plot(xh2,yh2,'.',color='crimson',alpha=0.2)
 	plt.show()
-
-	
 
 	plt.figure(2)
 	plt.xlim([-10,190])

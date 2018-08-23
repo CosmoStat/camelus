@@ -180,13 +180,13 @@ int main(int argc, char *argv[])
 	quitOnError(*err, __LINE__, stderr);
   }
   else if (task == 999) {
-	if (argc != 5) {printInstructions(task, 1); return 1;}
-    //int N = atoi(arg2);
-    char *input_name = arg2;
-    char *input_name2 = arg3;
-    char *input_name3 = arg4;
+	if (argc != 6) {printInstructions(task, 1); return 1;}
+    int N = atoi(arg2);
+    char *input_name = arg3;
+    char *input_name2 = arg4;
+    char *input_name3 = arg5;
 
-	//printf("Nb realisation : %i \n",N);
+	printf("Nb realisation : %i \n",N);
 	printf("Input param : %s \n",input_name );
 	printf("Output CatHalo : %s \n",input_name2 );
 	printf("Output CatGal : %s \n",input_name3 );
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
   	read_cosmo_hm(input_name, &cmhm, err);       
 	quitOnError(*err, __LINE__, stderr);
 
-	doProduce_Catalog_DM_galaxies_HOD_with_bias(input_name,input_name2,input_name3, cmhm, peak, err);
+	doProduce_Catalog_DM_galaxies_HOD_with_bias(N,input_name,input_name2,input_name3, cmhm, peak, err);
 	quitOnError(*err, __LINE__, stderr);
   }
 
@@ -308,7 +308,7 @@ void printInstructions(int task, int printHeader)
         case 971:
            printf("  ./camelus 971 N paramhm halocat galcat   # create catalog haloes with Ngal, corresponding galaxy catalog and its lensing quantities \n");
         case 999:
-           printf("  ./camelus 999 paramhm halocat galcat		 # create galcat, halocat, and histogram with/without bias \n");
+           printf("  ./camelus 999 N paramhm halocat galcat		 # create galcat, halocat, and histogram with/without bias \n");
            break;
      }
   }

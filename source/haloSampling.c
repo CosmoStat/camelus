@@ -327,7 +327,7 @@ void outputMassFct(char name[], cosmo_hm *cmhm, peak_param *peak, double z, erro
   
   fclose(file);
   free(cANDp);
-  if (name != NULL) printf("\"%s\" made\n", name);
+ // if (name != NULL) printf("\"%s\" made\n", name);
   return;
 }
 
@@ -411,7 +411,7 @@ void setMassSamplers(cosmo_hm *cmhm, peak_param *peak, sampler_arr *sampArr, err
   }
   
   free(cANDp);
-  if (peak->printMode < 2) printf("Mass function computation done\n");
+ // if (peak->printMode < 2) printf("Mass function computation done\n");
   return;
 }
 
@@ -448,7 +448,7 @@ void makeFastSimul(cosmo_hm *cmhm, peak_param *peak, sampler_arr *sampArr, halo_
     forwardError(*err, __LINE__,);
   }
   
-  if      (peak->printMode < 2)   printf("%d halos generated         \n", hMap->total);
+  if      (peak->printMode < 2)   printf("  %d halos generated         \n", hMap->total);
   else if (peak->printMode == 2) {printf("%6d halos, ", hMap->total); fflush(stdout);}
   return;
 }
@@ -467,7 +467,7 @@ void outputFastSimul(char name[], cosmo_hm *cmhm, peak_param *peak, halo_map *hM
   output_halo_map(file, peak, hMap);
   
   fclose(file);
-  printf("\"%s\" made\n", name);
+ // printf("\"%s\" made\n", name);
   return;
 }
 
@@ -625,7 +625,7 @@ void outputFastSimul_HOD(char name_cmhm[],char name[], cosmo_hm *cmhm, peak_para
   output_halo_map_HOD(name_cmhm,file,cmhm, peak, hMap);
   
   fclose(file);
-  printf("\"%s\" made\n", name);
+  //printf("\"%s\" made\n", name);
   return;
 }
 

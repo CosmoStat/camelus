@@ -293,8 +293,8 @@ void setFillingThreshold(peak_param *peak, gal_map *gMap, error **err)
   if (gMap->fillingThreshold != 0.0) return; //-- Already computed
   if (peak->doMask == 0) {
     gMap->fillingThreshold = -1.0;
-    if      (peak->printMode < 2)   printf("No mask\n");
-    else if (peak->printMode == 2) {printf("no mask, "); fflush(stdout);}
+   // if      (peak->printMode < 2)   printf("No mask\n");
+   // else if (peak->printMode == 2) {printf("no mask, "); fflush(stdout);}
     return;
   }
   
@@ -966,7 +966,7 @@ void outputProfile(char name[], cosmo_hm *cmhm, peak_param *peak, halo_t *h, dou
   }
   
   fclose(file);
-  printf("\"%s\" made\n", name);
+ // printf("\"%s\" made\n", name);
   return;
 }
 
@@ -1060,7 +1060,7 @@ void lensingForMap(cosmo_hm *cmhm, peak_param *peak, const halo_map *hMap, gal_m
     }
   }
   
-  if (peak->printMode < 2) printf("Lensing signal computation done           \n");
+  //if (peak->printMode < 2) printf("Lensing signal computation done           \n");
   if (peak->doKappa == 1)      gMap->type = kappa_map;
   else if (peak->doKappa >= 2) gMap->type = g_map;
   else                         gMap->type = gamma_map;
@@ -1391,8 +1391,8 @@ void subtractMean(peak_param *peak, gal_map *gMap)
     }
   }
   
-  if      (peak->printMode < 2)   printf("kappa mean %g subtracted\n", mean);
-  else if (peak->printMode == 2) {printf("kappa mean = %.5f, ", mean); fflush(stdout);}
+  if      (peak->printMode < 2)   printf("  kappa mean %g subtracted\n", mean);
+  else if (peak->printMode == 2) {printf("  kappa mean = %.5f, ", mean); fflush(stdout);}
   return;
 }
 
@@ -1547,6 +1547,8 @@ void lensingCatalogueAndOutputAll(cosmo_hm *cmhm, peak_param *peak, const halo_m
   return;
 }
 
+
+
 void outputGalaxies(char name[], cosmo_hm *cmhm, peak_param *peak, gal_map *gMap)
 {
   FILE *file = fopen(name, "w");
@@ -1561,7 +1563,7 @@ void outputGalaxies(char name[], cosmo_hm *cmhm, peak_param *peak, gal_map *gMap
   output_gal_map(file, peak, gMap);
   
   fclose(file);
-  printf("\"%s\" made\n", name);
+ // printf("\"%s\" made\n", name);
   return;
 }
 
@@ -1773,8 +1775,8 @@ void outputFastSimul_galaxies(char name_cmhm[], char name[], char name2[], cosmo
   fclose(file);
   fclose(file2);
   //printf("close \n");
-  printf("\"%s\" made\n", name);
-  printf("\"%s\" made\n", name2);
+  //printf("\"%s\" made\n", name);
+  //printf("\"%s\" made\n", name2);
   return;
 }
 
@@ -1794,7 +1796,7 @@ void outputFastSimul_galaxies2(char name_cmhm[], char name[], cosmo_hm *cmhm, pe
   fprintf(file, "#\n");
   output_halo_map_galaxies2(file,cmhm, peak, hMap, gMap);
   fclose(file);
-  printf("\"%s\" made\n", name);
+  //printf("\"%s\" made\n", name);
 
   return;
 }
@@ -1867,7 +1869,7 @@ void output_halo_map_galaxies(FILE *file,FILE *file2, cosmo_hm *cmhm, peak_param
       }
     }
   }
-  printf("Nb galaxies created : %i \n",ii);
+  printf("  Nb galaxies created : %i \n",ii);
   return;
 }
 
@@ -1886,7 +1888,7 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
   ii=0;
   ii2=0;
   srand(time(NULL));
-  printf( "Number of halos = %d\n", hMap->total);
+  printf( "  Number of halos = %d\n", hMap->total);
 
   fprintf(file, "# Number of halos = %d\n", hMap->total);
   fprintf(file, "#\n");
@@ -1943,8 +1945,8 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
       }
     }
   }
-  printf("Nb galaxies created : %i \n",ii);
-  printf("Nb galaxies created arrondi : %i \n",ii2);
+
+  printf("  Nb galaxies created : %i \n",ii2);
   return;
 }
 
@@ -1986,7 +1988,7 @@ void add_bias(cosmo_hm *cmhm,gal_map *gMap, gal_map *gMap_bias, error **err)
 
 void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
 {
-  printf("ok\n");
+
   gal_list *gList;
   gal_node *gNode, *pgNode;
   gal_t *g;
@@ -1997,54 +1999,38 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
   memset(nhod, 0, nbin);
 
   for (i=0; i<gMap->length; i++) {
-    if (gList->first != NULL)
-      {
-	//printf("mapi \n");
+    if (gList->first != NULL) {
 	gList = gMap->map[i];
-	//printf("mapi2 \n");
 	
-	for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {
-	  
+	for (j=0, gNode=gList->first; j<gList->size; j++, gNode=gNode->next) {  
 	  g = gNode->g;
 	  idz = floor(g->z/dz);
-	  //printf("ok idz %i \n",idz);
 	  nhod[idz] += 1;
-	  //printf("ok2 idz %i \n",idz);
-	}
-      }
+	  }
+   	}
   }
+
+
   for (i=0; i<gMap->length; i++) {
-    //printf("i = %i \n",i);
     gList = gMap->map[i];
-    if (gList->first != NULL)
-      {
 
+    if (gList->first != NULL) {
+		pgNode = gList->first;
+		g = pgNode->g;
 
-	pgNode = gList->first;
-	g = pgNode->g;
-	//printf("entree boucle\n");
-	while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size >1))
-	  {
-	    //printf("test ok\n");
+		while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size >1)) {
 	    gList->first = pgNode->next;
-	    //printf("assignation ok\n");
 	    free(pgNode);
-	    //printf("free ok\n");
 	    pgNode = gList->first;
-	    //printf("reassignation ok\n");
 	    gList->size -= 1;
 	    gList->length -= 1;
-	    //printf("size ok\n");
 	    free(g);
-	    //printf("refree ok\n");
 	    g = pgNode->g;
-	    //printf("gal ok\n");
-	  }
-	//printf("first ok\n");
+	  	}
+
 	for (j=1, gNode=pgNode->next; j<gList->size; j++, gNode=gNode->next) {
 	  
-	  while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size>j+1))
-	    {
+	  while ((TestRand(g->z, &nhod, dz) == 1) && (gList->size>j+1)) {
 	      pgNode->next = gNode->next;
 	      free(gNode);
 	      gNode = pgNode->next;
@@ -2055,9 +2041,9 @@ void CutOff(gal_map *gMap, double dz, peak_param *peak, error **err)
 	    }
 	  pgNode = gNode;
 	}
-      }
+   }
   }
-  printf("cut off done \n");
+ // printf("cut off done \n");
   return;
 }
 

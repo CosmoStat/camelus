@@ -290,7 +290,7 @@ void smoothByFFT_arr(peak_param *peak, gal_map *gMap, FFT_arr *FFTSmoother)
 {
   execute_FFT_arr(FFTSmoother);
   gMap->type += 1;
-  if (peak->printMode < 2) printf("FFT smoothing done\n");
+  // if (peak->printMode < 2) printf("FFT smoothing done\n");
   return;
 }
 
@@ -335,7 +335,7 @@ void DCForPair_kappa(peak_param *peak, gal_list *gList, FFT_t **DCSmooArr, doubl
 	pix[0] += SQ(factor);   //-- Compute the smoothed variance
 	pix[1] += fabs(factor); //-- Compute the smoothed number count (sum of weights)
       }
-      else if (peak->DC_filter[j] == M_ap_tanh); //-- Do nothing
+      //else if (peak->DC_filter[j] == M_ap_tanh); //-- Do nothing
     }
   }
   return;
@@ -657,7 +657,7 @@ void invertByLinKS_arr(peak_param *peak, gal_map *gMap, FFT_arr *FFTSmoother, FF
   }
   
   gMap->type %= 6;
-  if (peak->printMode < 2) printf("Linear KS done\n");
+  //if (peak->printMode < 2) printf("Linear KS done\n");
   return;
 }
 
@@ -695,7 +695,7 @@ void linKSAndFFT_arr(peak_param *peak, FFT_arr *FFTSmoother)
     fftw_execute(FFTSmoo->after_b);                                                          //-- Go to direct space
     rescaleReal_fftw_complex(FFTSmoo->after, FFTLength, peak->FFTNormFactor);                //-- Rescale, only real part is interesting.
   }
-  if (peak->printMode < 2) printf("Linear KS and FFT smoothing done\n");
+  //if (peak->printMode < 2) printf("Linear KS and FFT smoothing done\n");
   return;
 }
 
@@ -786,7 +786,7 @@ void invertByIterKS_arr(peak_param *peak, gal_map *gMap, FFT_arr *FFTSmoother, F
   }
   
   gMap->type %= 6;
-  if (peak->printMode < 2) printf("Iterative KS done\n");
+  //if (peak->printMode < 2) printf("Iterative KS done\n");
   return;
 }
 
@@ -805,8 +805,8 @@ void MRLensFiltering(peak_param *peak, char executable[], char option[], char in
   char command[STRING_LENGTH_MAX];
   sprintf(command, "%s %s %s %s %s", executable, option, input, output, log);
   int buffer = system(command);
-  if      (peak->printMode < 2)  printf("\"%s\" made\n", output);
-  else if (peak->printMode == 2) printf("MRLens done, ");
+  //if      (peak->printMode < 2)  printf("\"%s\" made\n", output);
+  //else if (peak->printMode == 2) printf("MRLens done, ");
   return;
 }
 
@@ -832,7 +832,7 @@ void outputMap(char name[], cosmo_hm *cmhm, peak_param *peak, map_t *kMap)
   output_map_t(file, kMap);
   
   fclose(file);
-  if (peak->printMode < 2)  printf("\"%s\" made\n", name);
+  //if (peak->printMode < 2)  printf("\"%s\" made\n", name);
   return;
 }
 
@@ -889,7 +889,7 @@ void outputMapFromTable(char name[], cosmo_hm *cmhm, peak_param *peak, fftw_comp
   }
   
   fclose(file);
-  if (peak->printMode < 2)  printf("\"%s\" made\n", name);
+ // if (peak->printMode < 2)  printf("\"%s\" made\n", name);
   return;
 }
 
@@ -913,7 +913,7 @@ void outfitsMapFromTable(char name[], peak_param *peak, fftw_complex *table, map
   write2DImage_double(fits, TDOUBLE, FLOAT_IMG, N1, N2, (void*)kappa);
   free_FITS_t(fits);
   
-  if (peak->printMode < 2)  printf("\"%s\" made\n", name);
+  //if (peak->printMode < 2)  printf("\"%s\" made\n", name);
 #endif
   return;
 }
@@ -940,7 +940,7 @@ void outputMask(char name[], peak_param *peak, gal_map *gMap, map_t *kMap, error
   output_map_t(file, kMap);
   
   fclose(file);
-  printf("\"%s\" made\n", name);
+  //printf("\"%s\" made\n", name);
   return;
 }
 
@@ -1265,7 +1265,7 @@ void makeMapAndOutputAll2(char fileName[], cosmo_hm *cmhm, peak_param *peak, gal
 
 
  
-void makeMapAndOutputAll3(cosmo_hm *cmhm, peak_param *peak, gal_map *gMap, FFT_arr *FFTSmoother, FFT_arr *DCSmoother, map_t *kMap, error **err)
+void makeMaplensing(cosmo_hm *cmhm, peak_param *peak, gal_map *gMap, FFT_arr *FFTSmoother, FFT_arr *DCSmoother, map_t *kMap, error **err)
 {
   //-- Map making main function: kappa/gamma/g/g-linear, noiseless/noisy, unsmoothed/smoothed
   //--
@@ -1356,10 +1356,9 @@ void makeMapAndOutputAll3(cosmo_hm *cmhm, peak_param *peak, gal_map *gMap, FFT_a
   if (doKappa != 0) {
     //-- Truth
     makeTrueMap3( cmhm, peak, gMap, FFTSmoother, DCSmoother, kMap, 0, err); forwardError(*err, __LINE__,);
-    outputMapFromTable("kappaMap_truth_2", cmhm, peak, firstFFTSmoo->before, kappa_map);
+    outputMapFromTable("kappaMap_truth", cmhm, peak, firstFFTSmoo->before, kappa_map);
   }
 
-	printf("fin map \n");
   return;
 }
 
