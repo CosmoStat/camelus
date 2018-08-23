@@ -197,7 +197,7 @@ def histogram_bias2(fich,fichbias,N):
 	plt.title('Peak abundance histogram (averaged over {0} realizations)'.format(N))
 	plt.xlabel('SNR')
 	plt.ylabel('Peak number')
-	#plt.legend()
+	plt.legend()
 	plt.show()
 	return
 
@@ -497,7 +497,7 @@ def read_catalogue_galaxies1(fich):
 	for i in range(np.size(zz)):
 		nn[i]=nnz(zz[i])
 	plt.plot(zz,nn,alpha=0.30,color='crimson')
-	#plt.yscale('log')
+	plt.yscale('log')
 	plt.title( 'Redshift histogramm of galaxy sources')
 	plt.ylabel(r'\LARGE{$\rm N_{sources}$}')
 	plt.xlabel(r'Redshift')
@@ -531,6 +531,29 @@ def read_catalogue_galaxies2(fich,fich2):
 	return 
 
 ########################################
+
+def read_catalog_halo_NM(fich):
+	dat = np.loadtxt(fich)
+	plt.close('all')
+	theta_x = dat[:,0]
+	theta_y = dat[:,1]
+	ww = dat[:,2]
+	zz = dat[:,3]
+	mm = dat[:,4]
+	nc = dat[:,5]
+	ns = dat[:,6]
+	rv = dat[:,7]
+
+	Ng =nc*(1+ns)
+	mm[zz>0.6]=0
+	mm[zz<0.4]=0
+	Ng[zz<0.4]=0
+	Ng[zz>0.6]=0
+
+	plt.figure(3)
+	plt.loglog(mm,Ng,'.')
+	plt.show()
+	return
 
 def read_catalog_halo(fich,opt):
 	dat = np.loadtxt(fich)
