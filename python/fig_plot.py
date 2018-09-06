@@ -454,16 +454,12 @@ def read_catalogue_haloANDgalaxies(fich1,fich2,z,dz):
 	theta_x[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
 	theta_y[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
 
-
 	dat = np.loadtxt(fich2)
 	thetag_x = dat[:,0]
 	thetag_y = dat[:,1]
 	thetag_z = dat[:,2]
 	thetag_x[(thetag_z>(z+dz/2.))|(thetag_z<(z-dz/2.))] = -100
 	thetag_y[(thetag_z>(z+dz/2.))|(thetag_z<(z-dz/2.))] = -100
-
-
-
 
 	plt.close('all')
 
@@ -483,27 +479,110 @@ def read_catalogue_haloANDgalaxies(fich1,fich2,z,dz):
 	return ;
 
 ##########################################
-def read_catalogue_galaxies1(fich):
+def read_zz(fich):
+
 	dat = np.loadtxt(fich)
 	red = dat[:,2]
 
 	plt.close('all')
 	plt.figure(1)
 
-	plt.hist(red,bins=10,color = 'limegreen', edgecolor = 'green',alpha=0.60,normed=True)
+	zz2=np.linspace(0,2,31)
+	ncat=np.copy(zz2)
+	for i in range(np.size(zz2)):
+		if( i < np.size(zz2)-1):
+			ncat[i]= sum(red[red<zz2[i]])
+	
 
-	zz=np.linspace(min(red),max(red))
-	nn=np.copy(zz)
-	for i in range(np.size(zz)):
-		nn[i]=nnz(zz[i])
-	plt.plot(zz,nn,alpha=0.30,color='crimson')
-	plt.yscale('log')
+	#plt.yscale('log')
+	plt.figure(1)
+	plt.title( 'Redshift histogramm of galaxy sources')
+	plt.ylabel(r'\LARGE{$\rm N_{sources}$}')
+	plt.xlabel(r'Redshift')
+	plt.plot(zz2,ncat/(180.*180.),alpha=0.80,color='green')
+	plt.show()
+	return
+
+def Hoekstra(a,b,c,aa):
+	zz=np.linspace(0,2,30)
+	nz=aa*(zz**a+zz**(a*b))/(zz**b+c)
+	return nz,zz
+
+##########################################
+def read_catalogue_galaxies1(fich):
+
+	#galcat_dir='./HoekstraNzQuantities/'  
+	#import HoekstraPop as hp  
+	#Nz3, zz3 = hp.HoekstraNz(galcat_dir) 
+	#Nz3, zz3 = Hoekstra(0.497,12.643,0.381,4068.19) 
+
+	dat = np.loadtxt(fich)
+	red = dat[:,2]
+
+	plt.close('all')
+	plt.figure(1)
+
+	zz2=np.linspace(0,max(red),301)
+	nn=np.copy(zz2)
+	ncat=np.copy(zz2)
+	for i in range(np.size(zz2)):
+		if( i < np.size(zz2)-1):
+			ncat[i]= np.size(red[((red<zz2[i+1])&(red>zz2[i]))])
+
+	zz3=np.linspace(0,5,301)
+	for i in range(np.size(zz3)):
+		nn[i]=nnz(zz3[i])
+
+	#plt.yscale('log')
+	ng=sum(ncat)
+	plt.figure(1)
+	plt.title( 'Redshift histogramm of galaxy sources')
+	plt.ylabel(r'\LARGE{$\rm N_{sources}$ per arcmin2} ')
+	plt.xlabel(r'Redshift')
+	plt.plot(zz2,ncat/180./180.,alpha=0.80,color='green')
+	plt.plot(zz3,nn,alpha=0.80,color='crimson')
+#	plt.plot(zz3,Nz3/((2.*60.)**2.),alpha=0.80,color='blue')
+
+
+	#Ng2=sum(Nz3)
+	print("\n nb galaxies : {0}, density nb/arcmin2 n={1} \n".format(ng,ng/((2.*60.)**2)))
+	print("\n nb galaxies normal : {0}, density nb/arcmin2 n={1} \n".format(sum(nn),sum(nn)/sum(nn)*47.))
+	#print("\n nb Hoekstra : {0}, density nb/arcmin2 n={1} \n".format(Ng2,Ng2/((2.*60.)**2)))
+	plt.show()
+
+
+def ngal(zz,dz):
+	zz1=np.linspace(0,zz,dz)
+	nn1=np.copy(zz1)
+	for i in range(np.size(zz1)):
+		nn1[i]=nnz(zz1[i])
+
+	plt.figure(3)
+	plt.plot(zz1,nn1,alpha=0.80,color='crimson')
+	print("\n nb galaxies normal : {0}\n".format(sum(nn1)/dz))
+	plt.show()
+	return
+
+def read_nz(fich,fich2):
+
+
+	dat = np.loadtxt(fich)
+	red = dat[:,2]
+
+	plt.close('all')
+	plt.figure(1)
+
+	plt.hist(red,bins=30,color = 'limegreen', edgecolor = 'green',alpha=0.60,normed=True)
+
+	dat = np.loadtxt(fich2)
+	red = dat[:,2]
+	plt.hist(red,bins=30,color = 'red', edgecolor = 'red',alpha=0.60,normed=True)
+
 	plt.title( 'Redshift histogramm of galaxy sources')
 	plt.ylabel(r'\LARGE{$\rm N_{sources}$}')
 	plt.xlabel(r'Redshift')
 
 	return
-
 
 def read_catalogue_galaxies2(fich,fich2):
 	dat = np.loadtxt(fich)

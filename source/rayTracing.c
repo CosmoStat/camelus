@@ -1884,7 +1884,9 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
   halo_node *hNode;
   error *myerr = NULL, **err = &myerr;
   int i,j,ii,ii2,k;
-  double Ds,Mh;
+  double Ds,Mh,zz;
+  char namehm[STRING_LENGTH_MAX] ;
+
   ii=0;
   ii2=0;
   srand(time(NULL));
@@ -1908,6 +1910,83 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
     for (j=0, hNode=hList->first; j<hList->size; j++, hNode=hNode->next) {
       h=hNode->h;
  	  Mh=h->M;
+	  //if(&cmhm->hod!=leauthaud11){
+		//if(h->z < 0.48) {
+		//	cmhm->log10M1     =  12.520;
+		//	cmhm->log10Mstar0  = 10.916;
+		//	cmhm->beta			=  0.457;
+		//	cmhm->delta		=  0.566;
+		//	cmhm->gamma     =    1.53;
+		//	cmhm->sigma_log_M  = 0.206;
+		//	cmhm->B_cut       =  1.47;
+		//	cmhm->B_sat       =  10.62;
+		//	cmhm->beta_cut    =  -0.13;
+		//	cmhm->beta_sat    =  0.859;
+		//	sprintf(namehm, "../param/hmparam_leauthaud2011_z1");
+		//} else if (h->z < 0.74) {
+		//	sprintf(namehm, "../param/hmparam_leauthaud2011_z2");
+		//	cmhm->log10M1   =    12.725;
+		//	cmhm->log10Mstar0 =  11.038;
+		//	cmhm->beta		=	  0.466;
+		//	cmhm->delta		=  0.61	;
+		//	cmhm->gamma       =  1.95;
+		//	cmhm->sigma_log_M =  0.249;
+		//	cmhm->B_cut      =   1.65;
+		//	cmhm->B_sat      =   9.04;
+		//	cmhm->beta_cut   =   0.59;
+		//	cmhm->beta_sat   =   0.74;
+		//} else {
+		//	cmhm->log10M1    =   12.722;
+		//	cmhm->log10Mstar0 =  11.1;
+		//	cmhm->beta		=	  0.47;
+		//	cmhm->delta		 = 0.393;
+		//	cmhm->gamma      =   2.51;
+		//	cmhm->sigma_log_M  = 0.227;
+		//	cmhm->	B_cut     =    2.46;
+		//	cmhm->B_sat      =   8.72;
+		//	cmhm->beta_cut   =   0.57;
+		//	cmhm->beta_sat   =   0.863;
+		//}
+		//read_cosmo_hm(namehm, &cmhm, err);
+	  //}
+	zz=h->z ;
+	 if(zz<0.4){
+		cmhm->log10M_min=13.17;
+		cmhm->log10M1=14.53;
+		cmhm->log10M0=11.09;
+		cmhm->sigma_log_M=0.39;
+		cmhm->alpha=1.27;
+		}
+	else if(zz<0.6){
+		cmhm->log10M_min=13.18;
+		cmhm->log10M1=14.47;
+		cmhm->log10M0=10.93;
+		cmhm->sigma_log_M=0.3;
+		cmhm->alpha=1.36;
+		}
+	else if(zz<0.8){
+		cmhm->log10M_min=1.77;
+		cmhm->log10M1=12.83;
+		cmhm->log10M0=11.54;
+		cmhm->sigma_log_M=0.5;
+		cmhm->alpha=1.07;
+		}
+	else if(zz<1){
+		cmhm->log10M_min=12.8;
+		cmhm->log10M1=13.94;
+		cmhm->log10M0=12.15;
+		cmhm->sigma_log_M=0.33;
+		cmhm->alpha=1.52;
+		}
+	else if(zz>1){
+		cmhm->log10M_min=12.62;
+		cmhm->log10M1=13.79;
+		cmhm->log10M0=8.67;
+		cmhm->sigma_log_M=0.3;
+		cmhm->alpha=1.5;
+		};
+	//printf("oki2\n");
+
         double ngc = Ngal_c(cmhm,h->M, cmhm->log10Mstar_min, cmhm->log10Mstar_max, err);
         forwardError(*err, __LINE__,);
         double ngs = Ngal_s(cmhm,h->M, cmhm->log10Mstar_min, cmhm->log10Mstar_max, err);

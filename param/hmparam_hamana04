@@ -45,7 +45,7 @@ pi_max 			60.0
 #  berwein02		Satellite model, no halo exclusion. For testing only!
 #  berwein02_hexcl	Satellite model with halo exlusion
 
-shod	 leauthaud11
+shod	 hamana04
 
 # Minimum and maximum stellar masses. Used for shod=leauthaud11.
 # For other models, only used for galaxy-galaxy lensing,
@@ -57,17 +57,10 @@ log10Mstar_max	12
 
 # Common parameters
 
-log10M1       12.725
-log10Mstar0   11.038
-beta			  0.466
-delta		  0.61	
-gamma         1.95
-sigma_log_M   0.249
-B_cut         1.65
-B_sat         9.04
-beta_cut      0.59
-beta_sat      0.74
-alpha         1
-fcen1         0
-fcen2         0
+log10M_min           11.77	 # Minimum halo mass for central galaxies [Msol/h]
+log10M1              12.84   # Scale mass for satellite galaxies [Msol/h]
+log10M0		10.98  			 # Minimum halo mass for satellite galaxies [Msol/h]
+sigma_log_M	    0.337	         # Central galaxy dispersion (Brown et al. 2008)
+alpha           1.17	         # Satellite power-law slope
+eta		        0.5	         # Fraction of halos with central galaxy of given type, 0 <= eta <= 1
 
