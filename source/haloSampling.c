@@ -674,43 +674,7 @@ void output_halo_map_HOD(char name_cmhm[],FILE *file, cosmo_hm *cmhm, peak_param
      // quitOnError(*err, __LINE__, stderr);
 
 	//ngal_all=12.*180.*180. ;
-	printf("oki\n");
 
-	 if(zz<0.4){
-		cmhm->log10M_min=13.17;
-		cmhm->log10M1=14.53;
-		cmhm->log10M0=11.09;
-		cmhm->sigma_log_M=0.39;
-		cmhm->alpha=1.27;
-		}
-	else if(zz<0.6){
-		cmhm->log10M_min=13.18;
-		cmhm->log10M1=14.47;
-		cmhm->log10M0=10.93;
-		cmhm->sigma_log_M=0.3;
-		cmhm->alpha=1.36;
-		}
-	else if(zz<0.8){
-		cmhm->log10M_min=12.24;
-		cmhm->log10M1=13.34;
-		cmhm->log10M0=10.5;
-		cmhm->sigma_log_M=0.5;
-		cmhm->alpha=1.28;
-		}
-	else if(zz<1){
-		cmhm->log10M_min=12.8;
-		cmhm->log10M1=13.94;
-		cmhm->log10M0=12.15;
-		cmhm->sigma_log_M=0.33;
-		cmhm->alpha=1.52;
-		}
-	else if(zz>1){
-		cmhm->log10M_min=12.62;
-		cmhm->log10M1=13.79;
-		cmhm->log10M0=8.67;
-		cmhm->sigma_log_M=0.3;
-		cmhm->alpha=1.5;
-		};
 
 	  ngc = Ngal_c(cmhm, Mh, cmhm->log10Mstar_min, cmhm->log10Mstar_max, err);
   	  forwardError(*err, __LINE__,);

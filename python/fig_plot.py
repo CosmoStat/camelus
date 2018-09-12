@@ -445,14 +445,27 @@ def map_peak(fich,fich2,lim):
 	return;
 
 ##########################################
+def read_h(fich1,z,dz):
+	dat = np.loadtxt(fich1)
+	theta_x = dat[:,0]
+	theta_y = dat[:,1]
+	theta_z = dat[:,3]
+	M = dat[:,4]
+	Nc = dat[:,5]
+	Ns = dat[:,6]
+	theta_x[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))] 
+	theta_y[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))] 
+	return theta_x[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))] ,theta_y[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))],theta_z[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))] ,M[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))] ,Nc[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))],Ns[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))]
 
 def read_catalogue_haloANDgalaxies(fich1,fich2,z,dz):
 	dat = np.loadtxt(fich1)
 	theta_x = dat[:,0]
 	theta_y = dat[:,1]
 	theta_z = dat[:,3]
+	M = dat[:,4]
 	theta_x[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
 	theta_y[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = -100
+	M[(theta_z>(z+dz/2.))|(theta_z<(z-dz/2.))] = 0
 
 	dat = np.loadtxt(fich2)
 	thetag_x = dat[:,0]
@@ -465,17 +478,29 @@ def read_catalogue_haloANDgalaxies(fich1,fich2,z,dz):
 
 	plt.figure(1)
 	plt.title( ' dark matter haloes')
-	plt.plot(theta_x ,theta_y,'.', color='blue', alpha=0.1)
-	plt.xlim([-10,190])
-	plt.ylim([-10,190])
+	#f, axarr = plt.subplots(2, sharey=True)
+
+	plt.scatter(theta_x ,theta_y,s=M/1e12*4, color='blue', alpha=0.5)
+	plt.xlim([0,180])
+	plt.ylim([0,180])
+	plt.xlabel(r' $\theta_x$ (arcmin)')
+	plt.ylabel(r' $\theta_y$ (arcmin)')
+	print("nb halo :", np.size(theta_x[(theta_z<(z+dz/2.))&(theta_z>(z-dz/2.))]))
+#	print("theta x  :", max(theta_x),min(theta_x))
+#	print("theta y  :", max(theta_y),min(theta_y))
 	plt.show()
 
-	plt.figure(2)	
-	plt.title( 'galaxy source positions')
-	plt.plot(thetag_x ,thetag_y,'.', color='red', alpha=0.1)
-	plt.xlim([-10,190])
-	plt.ylim([-10,190])
+	#plt.figure(2)	
+	#plt.title( 'galaxy source positions')
+	plt.scatter(thetag_x ,thetag_y,s=5, color='red', alpha=0.25)
+	plt.xlim([0,180])
+	plt.ylim([0,180])
+	plt.xlabel(r' $\theta_x$ (arcmin)')
+	plt.ylabel(r' $\theta_y$ (arcmin)')
 	plt.show()
+	print("nb gal  :", np.size(thetag_x[(thetag_z<(z+dz/2.))&(thetag_z>(z-dz/2.))]))
+	#print("theta x  :", max(thetag_x),min(thetag_x))
+	#print("theta y  :", max(thetag_y),min(thetag_y))
 	return ;
 
 ##########################################
