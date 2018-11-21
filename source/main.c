@@ -183,13 +183,18 @@ int main(int argc, char *argv[])
 	if (argc != 6) {printInstructions(task, 1); return 1;}
     int N = atoi(arg2);
     char *input_name = arg3;
+    char *output_name2 = arg4;
+    char *output_name3 = arg5;
 
 	printf("Nb realisation : %i \n",N);
 	printf("Input param : %s \n",input_name );
+	printf("Output CatHalo : %s \n",output_name2 );
+	printf("Output CatGal : %s \n",output_name3 );
 
   	read_cosmo_hm(input_name, &cmhm, err);       
 	quitOnError(*err, __LINE__, stderr);
 
+	doProduce_Catalog_DM_galaxies_HOD_with_bias(N,input_name,output_name2,output_name3, cmhm, peak, err);
 	quitOnError(*err, __LINE__, stderr);
   }
 

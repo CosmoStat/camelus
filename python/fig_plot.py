@@ -22,6 +22,44 @@ from matplotlib.mlab import griddata
 plt.rc('text',usetex=True)
 plt.rc('font', family='serif', size=12, serif='cz00')
 
+def nz_multi2(catGal,nhalo):
+	plt.close('all')
+	plt.figure(1)
+	nnz2=10
+
+
+	for iii in range(nhalo):
+		print('test {0}'.format(iii))
+		catHalo2="{0}{1:03d}".format(catGal,iii+1)
+		dat = np.loadtxt(catHalo2)
+		z =dat[:,2]
+		if iii == 0:
+			zmin=min(z)
+			zmax=max(z)
+			zz2=np.linspace(zmin,zmax,nnz2)
+			nz2=np.linspace(zmin,zmax,nnz2)*0
+			dz=zz2[1]-zz2[0]
+
+		print("z : {0} {1} ".format(min(z),max(z)))
+		
+		print("tot gal : {0} ".format(len(z)))
+		for i in range(len(z)):
+			ii=int(((z[i]-zmin)/dz)-0.5)
+			nz2[ii]=nz2[ii]+1
+
+		nz2=nz2/(sum(nz2))
+		plt.plot(zz2,nz2,'+')
+		plt.plot(zz2,nz2,color='b')
+
+	#plt.hist(z,bins=10,normed=True,color='b',alpha=0.5)
+	zz=np.linspace(zmin,zmax,nnz2)
+	nn2=nnz(zz)
+	nn2=nn2/sum(nz2)/sum(nn2)
+	print("tot gal : {0} ".format(sum(nn2)))
+	plt.plot(zz,nn2,color='r')
+	plt.show()
+	return
+
 def nz_multi(catHalo,nhalo):
 	plt.close('all')
 	plt.figure(1)
