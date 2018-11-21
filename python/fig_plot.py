@@ -34,7 +34,7 @@ def nz_multi(catHalo,nhalo):
 
 	for iii in range(nhalo):
 		print('test {0}'.format(iii))
-		catHalo2="{0}{1:02d}".format(catHalo,iii+1)
+		catHalo2="{0}{1:03d}".format(catHalo,iii+1)
 		dat = ascii.read(catHalo2)
 		z =dat['col4']
 		print("z : {0} {1} ".format(min(z),max(z)))

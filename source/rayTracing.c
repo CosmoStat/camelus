@@ -1911,42 +1911,6 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
       h=hNode->h;
  	  Mh=h->M;
 	  //if(&cmhm->hod!=leauthaud11){
-		//if(h->z < 0.48) {
-		//	cmhm->log10M1     =  12.520;
-		//	cmhm->log10Mstar0  = 10.916;
-		//	cmhm->beta			=  0.457;
-		//	cmhm->delta		=  0.566;
-		//	cmhm->gamma     =    1.53;
-		//	cmhm->sigma_log_M  = 0.206;
-		//	cmhm->B_cut       =  1.47;
-		//	cmhm->B_sat       =  10.62;
-		//	cmhm->beta_cut    =  -0.13;
-		//	cmhm->beta_sat    =  0.859;
-		//	sprintf(namehm, "../param/hmparam_leauthaud2011_z1");
-		//} else if (h->z < 0.74) {
-		//	sprintf(namehm, "../param/hmparam_leauthaud2011_z2");
-		//	cmhm->log10M1   =    12.725;
-		//	cmhm->log10Mstar0 =  11.038;
-		//	cmhm->beta		=	  0.466;
-		//	cmhm->delta		=  0.61	;
-		//	cmhm->gamma       =  1.95;
-		//	cmhm->sigma_log_M =  0.249;
-		//	cmhm->B_cut      =   1.65;
-		//	cmhm->B_sat      =   9.04;
-		//	cmhm->beta_cut   =   0.59;
-		//	cmhm->beta_sat   =   0.74;
-		//} else {
-		//	cmhm->log10M1    =   12.722;
-		//	cmhm->log10Mstar0 =  11.1;
-		//	cmhm->beta		=	  0.47;
-		//	cmhm->delta		 = 0.393;
-		//	cmhm->gamma      =   2.51;
-		//	cmhm->sigma_log_M  = 0.227;
-		//	cmhm->	B_cut     =    2.46;
-		//	cmhm->B_sat      =   8.72;
-		//	cmhm->beta_cut   =   0.57;
-		//	cmhm->beta_sat   =   0.863;
-		//}
 		//read_cosmo_hm(namehm, &cmhm, err);
 	  //}
 
