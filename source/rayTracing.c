@@ -1910,7 +1910,6 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
     for (j=0, hNode=hList->first; j<hList->size; j++, hNode=hNode->next) {
       h=hNode->h;
  	  Mh=h->M;
-	  //if(&cmhm->hod!=leauthaud11){
 		if(h->z < 0.48) {
 			cmhm->log10M1     =  12.520;
 			cmhm->log10Mstar0  = 10.916;
@@ -1947,8 +1946,6 @@ void output_halo_map_galaxies2(FILE *file, cosmo_hm *cmhm, peak_param *peak, hal
 			cmhm->beta_cut   =   0.57;
 			cmhm->beta_sat   =   0.863;
 		}
-		//read_cosmo_hm(namehm, &cmhm, err);
-	  //}
 
         double ngc = Ngal_c(cmhm,h->M, cmhm->log10Mstar_min, cmhm->log10Mstar_max, err);
         forwardError(*err, __LINE__,);
