@@ -228,7 +228,10 @@ int main(int argc, char *argv[])
 	printf("Output CatHalo : %s \n",output_name2 );
 	printf("Output CatGal : %s \n",output_name3 );
 
-  	read_cosmo_hm(input_name, &cmhm, err);       
+	cmhm=initialize_cosmo_hm_default(err);
+  	read_cosmo_hm(input_name, &cmhm, err);  
+	if(cmhm->hod == coupon15) {printf("HOD Model : Coupon15 \n");}   
+	if(cmhm->hod == leauthaud11) {printf("HOD Model : Leauthaud \n");}    
 	quitOnError(*err, __LINE__, stderr);
 	doProduce_Catalog_DM_galaxies_HOD_N(N,input_name,output_name2,output_name3, cmhm, peak, err);
 	quitOnError(*err, __LINE__, stderr);
