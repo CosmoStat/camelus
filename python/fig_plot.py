@@ -25,6 +25,7 @@ plt.rc('font', family='serif', size=12, serif='cz00')
 def nz_multi2(catGal,nhalo):
 	plt.close('all')
 	plt.figure(1)
+	nnz2=49
 
 
 	for iii in range(nhalo):
@@ -43,8 +44,12 @@ def nz_multi2(catGal,nhalo):
 		
 		print("tot gal : {0} ".format(len(z)))
 		for i in range(len(z)):
+			ii=int(((z[i]-zmin)/dz))
 			nz2[ii]=nz2[ii]+1
 
+	nz2=nz2/(sum(nz2))
+	plt.plot(zz2,nz2,'+')
+	plt.plot(zz2,nz2,color='b')
 
 	#plt.hist(z,bins=10,normed=True,color='b',alpha=0.5)
 	zz=np.linspace(zmin,zmax,nnz2)
